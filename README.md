@@ -52,9 +52,9 @@
       ```
 
     ### form data 값 가져오기
-    ```
-    arg([param_name], [data-type])
-    ```
+      ```
+      arg([param_name], [data-type])
+      ```
     * application/controllers/Example.py
       ```
       ...
@@ -88,9 +88,9 @@
       ```
 
     ### query 실행
-    ```
-    execute([sql], [*data])
-    ```
+      ```
+      execute([sql], [*data])
+      ```
     * application/models/Example_Model.py
       ```
       def example(self):
@@ -102,9 +102,10 @@
       ```
 
     ### query 결과
-    ```
-    fetchall()
-    ```
+      ```
+      fetchall()
+      ```
+
     * application/models/Example_Model.py
       ```
       def example(self):
@@ -113,9 +114,11 @@
           self.db.execute(sql)
           res = self.db.fetchall()
       ```
-    ```
-    fetchone()
-    ```
+
+      ```
+      fetchone()
+      ```
+
     * application/models/Example_Model.py
       ```
       def example(self):
@@ -126,9 +129,10 @@
       ```
 
     ### db 연결 해제
-    ```
-    close()
-    ```
+      ```
+      close()
+      ```
+
     * application/models/Example_Model.py
       ```
       def example(self):
