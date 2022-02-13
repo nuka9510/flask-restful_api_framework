@@ -15,6 +15,7 @@
     ```
 
   ## Controller
+
     ### Controller 추가
     * application/controllers/Example.py
       ```
@@ -49,6 +50,7 @@
 
       app.register_blueprint(Example.bp)
       ```
+
     ### form data 값 가져오기
     ```
     arg([param_name], [data-type])
@@ -67,6 +69,7 @@
       ```
 
   ## Model
+
     ### Model 추가
     * application/models/Example_Model.py
       ```
@@ -83,6 +86,7 @@
               self.db.close()
               return res
       ```
+
     ### query 실행
     ```
     execute([sql], [*data])
@@ -96,6 +100,7 @@
           or
           self.db.execute(sql, ('a', 'b', 1, 2))
       ```
+
     ### query 결과
     ```
     fetchall()
@@ -119,6 +124,7 @@
           self.db.execute(sql)
           res = self.db.fetchone()
       ```
+
     ### db 연결 해제
     ```
     close()
