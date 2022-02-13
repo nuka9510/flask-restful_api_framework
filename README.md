@@ -50,9 +50,9 @@
   app.register_blueprint(Example.bp)
   ```
 ### form data 값 가져오기
-  ```
-  arg([param_name], [data-type])
-  ```
+```
+arg([param_name], [data-type])
+```
 * application/controllers/Example.py
   ```
   ...
@@ -67,76 +67,69 @@
   ```
 
 ## Model
+### Model 추가
+* application/models/Example_Model.py
+  ```
+  from system.core.model import *
 
-  ### Model 추가
-  * application/models/Example_Model.py
-    ```
-    from system.core.model import *
+  class Example_Model():
+      def __init__(self):
+          self.db = Model()
 
-    class Example_Model():
-        def __init__(self):
-            self.db = Model()
+      def example(self):
+          sql = '''[QUERY]'''
+          self.db.execute(sql)
+          res = self.db.fetchall()
+          self.db.close()
+          return res
+  ```
 
-        def example(self):
-            sql = '''[QUERY]'''
-            self.db.execute(sql)
-            res = self.db.fetchall()
-            self.db.close()
-            return res
-    ```
+### query 실행
+```
+execute([sql], [*data])
+```
+* application/models/Example_Model.py
+  ```
+  def example(self):
+      sql = '''[QUERY]'''
 
-  ### query 실행
-    ```
-    execute([sql], [*data])
-    ```
-  * application/models/Example_Model.py
-    ```
-    def example(self):
-        sql = '''[QUERY]'''
+      self.db.execute(sql)
+      or
+      self.db.execute(sql, ('a', 'b', 1, 2))
+  ```
+### query 결과
+```
+fetchall()
+```
+* application/models/Example_Model.py
+  ```
+  def example(self):
+      sql = '''[QUERY]'''
 
-        self.db.execute(sql)
-        or
-        self.db.execute(sql, ('a', 'b', 1, 2))
-    ```
+      self.db.execute(sql)
+      res = self.db.fetchall()
+  ```
+```
+fetchone()
+```
+* application/models/Example_Model.py
+  ```
+  def example(self):
+      sql = '''[QUERY]'''
 
-  ### query 결과
-    ```
-    fetchall()
-    ```
+      self.db.execute(sql)
+      res = self.db.fetchone()
+  ```
+### db 연결 해제
+```
+close()
+```
+* application/models/Example_Model.py
+  ```
+  def example(self):
+      sql = '''[QUERY]'''
 
-  * application/models/Example_Model.py
-    ```
-    def example(self):
-        sql = '''[QUERY]'''
-
-        self.db.execute(sql)
-        res = self.db.fetchall()
-    ```
-
-    ```
-    fetchone()
-    ```
-
-  * application/models/Example_Model.py
-    ```
-    def example(self):
-        sql = '''[QUERY]'''
-
-        self.db.execute(sql)
-        res = self.db.fetchone()
-    ```
-
-  ### db 연결 해제
-    ```
-    close()
-    ```
-
-  * application/models/Example_Model.py
-    ```
-    def example(self):
-        sql = '''[QUERY]'''
-
-        self.db.execute(sql)
-        res = self.db.fetchone()
-        self.db.close()
-    ```
+      self.db.execute(sql)
+      res = self.db.fetchone()
+      self.db.close()
+  ```
