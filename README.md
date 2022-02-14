@@ -13,6 +13,10 @@
   ```
   $ pip install mysql-connector-python
   ```
+* passlib
+  ```
+  $ pip install passlib
+  ```
 
 ## Controller
 ### Controller 추가
@@ -132,4 +136,12 @@ close()
       self.db.execute(sql)
       res = self.db.fetchone()
       self.db.close()
+  ```
+
+## util
+### 암호화
+  ```
+  from system.core.util import Util
+
+  Util().crypt('sha256', 'password', salt = 'yoursalt', rounds = 1000, ...)
   ```

@@ -22,7 +22,7 @@ class Model():
         if not self.con.is_connected():
             self.connect()
         
-        self.cur.execute(sql, data)
+        self.cur.execute(sql, *data)
 
     def fetchall(self):
         column_names = self.cur.column_names
