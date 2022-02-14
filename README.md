@@ -21,7 +21,7 @@
   from system.core.controller import *
   from application.models import Example_Model
 
-  bp = Blueprint('Index', __name__)
+  bp = Blueprint('Example', __name__[, url_prefix = '/example'])
   api = Api(bp)
   example_model = Example_Model.Example_Model()
 
