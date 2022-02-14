@@ -1,4 +1,4 @@
-# my_flask_restapi_project
+# my_python_restapi_framework
 
 ## 사용 라이브러리 (*필수 설치)
 * flask

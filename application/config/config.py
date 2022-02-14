@@ -1,7 +1,5 @@
-from flask import Flask
+from system.core.framework import app
 from datetime import timedelta
-
-app = Flask(__name__)
 
 app.config = {
     'ENV': 'production',
