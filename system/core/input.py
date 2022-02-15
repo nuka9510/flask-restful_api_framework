@@ -2,10 +2,12 @@ import ast, re
 from flask_restful import reqparse
 
 class Input():
+    def __init__(self):
+        self.input = reqparse.RequestParser()
+
     def arg(self, name, arg_type):
-        input = reqparse.RequestParser()
-        input.add_argument(name, type=arg_type)
-        self.args = input.parse_args()
+        self.input.add_argument(name, type=arg_type)
+        self.args = self.input.parse_args()
 
         if arg_type is str:
             self.args[name] = str(self.args[name])

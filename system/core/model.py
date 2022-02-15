@@ -3,6 +3,9 @@ from mysql.connector import errorcode
 from application import db
 
 class Model():
+    def __init__(self):
+        self.connect()
+
     def connect(self):
         try:
             self.con = mysql.connector.connect(**db)
@@ -11,10 +14,7 @@ class Model():
             return err
 
     def execute(self, sql, *data):
-        try:
-            if not self.con.is_connected():
-                self.connect()
-        except AttributeError:
+        if not self.con.is_connected():
             self.connect()
         
         self.cur.execute(sql, *data)
