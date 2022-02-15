@@ -19,15 +19,12 @@
   ```
 
 ## Controller
-### Controller 추가
 * application/controllers/Example.py
   ```
   from system.core.controller import *
-  from application.models import Example_Model
 
   bp = Blueprint('Example', __name__[, url_prefix = '/example'])
   api = Api(bp)
-  example_model = Example_Model.Example_Model()
 
   @api.resource('/')
   class Example(Resource):
@@ -48,30 +45,13 @@
   ```
 * application/controllers/__init__.py
   ```
-  from application.config.config import app
+  from system.core.framework import app
   from . import Example
 
   app.register_blueprint(Example.bp)
   ```
-### form data 값 가져오기
-```
-arg([param_name], [data-type])
-```
-* application/controllers/Example.py
-  ```
-  ...
-  @api.resource('/')
-  class Example(Resource):
-      def __init__(self):
-          self.core = Controller()
-
-      def get(self):
-          data = self.core.arg('data', str)
-          return {'data': data}
-  ```
 
 ## Model
-### Model 추가
 * application/models/Example_Model.py
   ```
   from system.core.model import *
@@ -87,61 +67,46 @@ arg([param_name], [data-type])
           self.db.close()
           return res
   ```
+* application/models/__init__.py
+  ```
+  from . import Example_Model
+  ```
 
 ### query 실행
-```
-execute([sql], [*data])
-```
-* application/models/Example_Model.py
   ```
-  def example(self):
-      sql = '''[QUERY]'''
-
-      self.db.execute(sql)
-      or
-      self.db.execute(sql, ('a', 'b', 1, 2))
+  self.db.execute([sql], [*data])
   ```
 ### query 결과
-```
-fetchall()
-```
-* application/models/Example_Model.py
   ```
-  def example(self):
-      sql = '''[QUERY]'''
-
-      self.db.execute(sql)
-      res = self.db.fetchall()
-  ```
-```
-fetchone()
-```
-* application/models/Example_Model.py
-  ```
-  def example(self):
-      sql = '''[QUERY]'''
-
-      self.db.execute(sql)
-      res = self.db.fetchone()
+  self.db.fetchall()
+  or
+  self.db.fetchone()
   ```
 ### db 연결 해제
-```
-close()
-```
-* application/models/Example_Model.py
   ```
-  def example(self):
-      sql = '''[QUERY]'''
-
-      self.db.execute(sql)
-      res = self.db.fetchone()
-      self.db.close()
+  self.db.close()
   ```
 
-## util
-### 암호화
+## Input
   ```
-  from system.core.util import Util
+  from system.core.input import Input
 
-  Util().crypt('sha256', 'password', salt = 'yoursalt', rounds = 1000, ...)
+  Input().arg([param_name], [data_type])
+  ```
+
+## Upload
+  ```
+  from system.core.upload import Upload
+
+  upload = Upload([file_name], [path = 'upload_path'], jpg, png, gif, ...)
+
+  if upload:
+    upload.file_upload()
+  ```
+
+## Encryption
+  ```
+  from system.core.encryption import Encryption
+
+  Encryption().crypt([schema_id], [word], [salt = 'yoursalt'], [rounds = 1000], ...)
   ```

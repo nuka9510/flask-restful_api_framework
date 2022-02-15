@@ -1,7 +1,6 @@
-from system.core.framework import app
 from datetime import timedelta
 
-app.config = {
+config = {
     'ENV': 'production',
     'DEBUG': True,
     'TESTING': False,
@@ -31,3 +30,6 @@ app.config = {
     'EXPLAIN_TEMPLATE_LOADING': False,
     'MAX_COOKIE_SIZE': 4093
 }
+
+salt = '[YOURSALT]'
+upload_path = '/uploads'

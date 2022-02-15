@@ -1,4 +1,4 @@
-from application.config.config import app
-from . import Index
+from system.core.framework import app
+from . import Example
 
-app.register_blueprint(Index.bp)
+app.register_blueprint(Example.bp)
