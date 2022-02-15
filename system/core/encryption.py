@@ -1,12 +1,12 @@
 from passlib.hash import bcrypt, sha256_crypt, sha512_crypt, md5_crypt, sha1_crypt
-from application import salt
+from application import config
 
 class Encryption():
     def crypt(self, schema, word, **options):
         try:
             options['salt']
         except KeyError:
-            options['salt'] = salt
+            options['salt'] = config['ENCRYPTION_SALT']
             
         if schema == 'bcrypt':
             options['salt'] = options['salt'][0:22]

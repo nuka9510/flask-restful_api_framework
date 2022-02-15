@@ -20,7 +20,6 @@ class Input():
         else:
             return self.args[name]
 
-
     def json_convert(self, name):
         self.args[name] = self.args[name].replace('\"', '\'')
         self.args[name] = re.sub('(:)null(,|\})', r'\1None\2', self.args[name])

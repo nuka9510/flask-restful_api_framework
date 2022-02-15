@@ -1,7 +1,7 @@
 import os
 from flask import request
 from werkzeug.utils import secure_filename
-from application import upload_path
+from application import config
 
 class Upload():
     def file_upload(self, name, *allowed_extensions, **options):
@@ -11,7 +11,7 @@ class Upload():
         try:
             options['upload_path']
         except KeyError:
-            options['upload_path'] = upload_path
+            options['upload_path'] = config['UPLOAD_PATH']
 
         if not os.path.exists(options['upload_path']):
             os.makedirs(options['upload_path'], mode = 0o777)
