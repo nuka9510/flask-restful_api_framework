@@ -43,7 +43,7 @@
       def delete(self):
           return {'message': 'Example Page DELETE'}
   ```
-* application/controllers/__init__.py
+* application/controllers/\__init__.py
   ```
   from system.core.framework import app
   from . import Example
@@ -67,7 +67,7 @@
           self.db.close()
           return res
   ```
-* application/models/__init__.py
+* application/models/\__init__.py
   ```
   from . import Example_Model
   ```
