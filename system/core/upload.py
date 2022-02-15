@@ -4,14 +4,17 @@ from werkzeug.utils import secure_filename
 from application import upload_path
 
 class Upload():
-    def file_upload(self, name, path = None, *allowed_extensions):
+    def file_upload(self, name, *allowed_extensions, **options):
         flag = False
         file = request.files[name]
 
-        if path is None:
-            self.upload_path = upload_path
-        else:
-            self.upload_path = path
+        try:
+            options['upload_path']
+        except KeyError:
+            options['upload_path'] = upload_path
+
+        if not os.path.exists(options['upload_path']):
+            os.makedirs(options['upload_path'], mode = 0o777)
 
         if allowed_extensions:
             extensions = set(allowed_extensions)
@@ -21,9 +24,27 @@ class Upload():
             flag = True
         
         if flag:
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(self.upload_path, filename)
-            file.save(filepath)
-            return {'result': flag,'filename': filename, 'filepath': filepath}
+            orig_name = secure_filename(file.filename).rsplit('.', 1)[0]
+            file_ext = f'.{file.filename.rsplit(".", 1)[1].lower()}'
+
+            try:
+                options['file_name']
+            except KeyError:
+                options['file_name'] = orig_name
+
+            full_path = os.path.join(options['upload_path'], f'{options["file_name"]}{file_ext}')
+            file.save(full_path)
+
+            return {
+                'result': flag,
+                'file_name': f'{options["file_name"]}{file_ext}',
+                'file_path': options['upload_path'],
+                'full_path': full_path,
+                'raw_name': options['file_name'],
+                'orig_name': orig_name,
+                'file_ext': file_ext,
+            }
         else:
-            return {'result': flag}
+            return {
+                'result': flag
+            }

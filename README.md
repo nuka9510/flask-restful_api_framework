@@ -71,7 +71,7 @@
 
 ### query 실행
   ```
-  self.db.execute([sql], [*data])
+  self.db.execute([sql], *[data, ...])
   ```
 ### query 결과
   ```
@@ -95,12 +95,12 @@
   ```
   from system import Upload
 
-  Upload().file_upload([file_name], [path = 'upload_path'], *[jpg, png, gif, ...])
+  Upload().file_upload([file_name], *[jpg, png, gif, ...], **[upload_path = [upload_path], file_name = [file_name]])
   ```
 
 ## Encryption
   ```
   from system import Encryption
 
-  Encryption().crypt([schema_id], [word], **[[salt = 'yoursalt'], [rounds = 1000], ...])
+  Encryption().crypt([schema_id], [word], **[salt = [salt], rounds = [rounds:int], ...])
   ```
