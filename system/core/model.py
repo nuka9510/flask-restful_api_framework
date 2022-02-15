@@ -11,7 +11,10 @@ class Model():
             return err
 
     def execute(self, sql, *data):
-        if not self.con.is_connected():
+        try:
+            if not self.con.is_connected():
+                self.connect()
+        except AttributeError:
             self.connect()
         
         self.cur.execute(sql, *data)
