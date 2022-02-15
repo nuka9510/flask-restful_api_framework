@@ -53,15 +53,12 @@
   ```
   from system import Model
 
-  class Example_Model():
-      def __init__(self):
-          self.db = Model()
-
+  class Example_Model(Model):
       def example(self):
           sql = '''[QUERY]'''
-          self.db.execute(sql)
-          res = self.db.fetchall()
-          self.db.close()
+          self.execute(sql)
+          res = self.fetchall()
+          self.close()
           return res
   ```
 * application/models/\__init__.py
@@ -71,36 +68,46 @@
 
 ### query 실행
   ```
-  self.db.execute([sql], *[data, ...])
+  self.execute([sql], *[data, ...])
   ```
 ### query 결과
   ```
-  self.db.fetchall()
+  self.fetchall()
   or
-  self.db.fetchone()
+  self.fetchone()
   ```
 ### db 연결 해제
   ```
-  self.db.close()
+  self.close()
   ```
 
 ## Input
   ```
   from system import Input
 
-  Input().arg([param_name], [data_type])
+  input = Input()
+  input.arg([param_name], [data_type])
   ```
 
 ## Upload
   ```
   from system import Upload
 
-  Upload().file_upload([file_name], *[jpg, png, gif, ...], **[upload_path = [upload_path], file_name = [file_name]])
+  upload = Upload()
+  upload.file_upload([file_name], *[jpg, png, gif, ...], **[upload_path = [upload_path], file_name = [file_name]])
   ```
 
 ## Encryption
   ```
   from system import Encryption
 
-  Encryption().crypt([schema_id], [word], **[salt = [salt], rounds = [rounds:int], ...])
+  encryption = Encryption()
+  encryption.crypt([schema_id], [word], **[salt = [salt], rounds = [rounds:int], ...])
+  ```
+
+## Util
+  ```
+  from system import Util
+
+  util = Util()
   ```

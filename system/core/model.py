@@ -3,16 +3,12 @@ from mysql.connector import errorcode
 from application import db
 
 class Model():
-    def __init__(self):
-        self.connect()
-
     def connect(self):
         try:
             self.con = mysql.connector.connect(**db)
             self.cur = self.con.cursor()
         except mysql.connector.Error as err:
             return err
-
 
     def execute(self, sql, *data):
         if not self.con.is_connected():

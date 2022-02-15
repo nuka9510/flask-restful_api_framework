@@ -5,9 +5,6 @@ api = Api(bp)
 
 @api.resource('/')
 class Example(Resource):
-    def __init__(self):
-        pass
-
     def get(self):
         return {'message': 'Example Page GET'}
 
