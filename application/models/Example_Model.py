@@ -1,4 +1,4 @@
-from system.core.model import *
+from system import Model
 
 class Example_Model():
     def __init__(self):

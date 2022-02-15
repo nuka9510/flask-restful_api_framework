@@ -1,18 +1,18 @@
 import mysql.connector, decimal, datetime
 from mysql.connector import errorcode
-from application.config import database
+from application import db
 
 class Model():
     def __init__(self):
         try:
-            self.con = mysql.connector.connect(**database.db)
+            self.con = mysql.connector.connect(**db)
             self.cur = self.con.cursor()
         except mysql.connector.Error as err:
             return err
 
     def connect(self):
         try:
-            self.con = mysql.connector.connect(**database.db)
+            self.con = mysql.connector.connect(**db)
             self.cur = self.con.cursor()
         except mysql.connector.Error as err:
             return err

@@ -1,6 +1,6 @@
 from system.core.controller import *
 
-bp = Blueprint('Example', __name__)
+bp = Blueprint('Example', __name__, '/example')
 api = Api(bp)
 
 @api.resource('/')

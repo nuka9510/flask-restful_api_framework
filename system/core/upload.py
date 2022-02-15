@@ -1,7 +1,7 @@
 import os
 from flask import request
 from werkzeug.utils import secure_filename
-from application.config.config import upload_path
+from application import upload_path
 
 class Upload():
     def __init__(self, name, path = None, *allowed_extensions):

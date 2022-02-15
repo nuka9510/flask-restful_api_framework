@@ -1,5 +1,5 @@
 from passlib.hash import bcrypt, sha256_crypt, sha512_crypt, md5_crypt, sha1_crypt
-from application.config.config import salt
+from application import salt
 
 class Encryption():
     def __init__(self):

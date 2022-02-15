@@ -1,4 +1,4 @@
-from system.core.framework import app
+from system import app
 from . import Example
 
 app.register_blueprint(Example.bp)

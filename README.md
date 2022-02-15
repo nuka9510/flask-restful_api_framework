@@ -45,7 +45,7 @@
   ```
 * application/controllers/\__init__.py
   ```
-  from system.core.framework import app
+  from system import app
   from . import Example
 
   app.register_blueprint(Example.bp)
@@ -54,7 +54,7 @@
 ## Model
 * application/models/Example_Model.py
   ```
-  from system.core.model import *
+  from system import Model
 
   class Example_Model():
       def __init__(self):
@@ -69,7 +69,7 @@
   ```
 * application/models/\__init__.py
   ```
-  from . import Example_Model
+  from .Example_Model import Example_Model as Example_Model
   ```
 
 ### query 실행
@@ -89,14 +89,14 @@
 
 ## Input
   ```
-  from system.core.input import Input
+  from system import Input
 
   Input().arg([param_name], [data_type])
   ```
 
 ## Upload
   ```
-  from system.core.upload import Upload
+  from system import Upload
 
   upload = Upload([file_name], [path = 'upload_path'], jpg, png, gif, ...)
 
@@ -106,7 +106,7 @@
 
 ## Encryption
   ```
-  from system.core.encryption import Encryption
+  from system import Encryption
 
   Encryption().crypt([schema_id], [word], [salt = 'yoursalt'], [rounds = 1000], ...)
   ```
