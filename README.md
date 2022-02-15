@@ -28,9 +28,6 @@
 
   @api.resource('/')
   class Example(Resource):
-      def __init__(self):
-          self.core = Controller()
-
       def get(self):
           return {'message': 'Example Page GET'}
 
@@ -98,15 +95,12 @@
   ```
   from system import Upload
 
-  upload = Upload([file_name], [path = 'upload_path'], jpg, png, gif, ...)
-
-  if upload:
-    upload.file_upload()
+  Upload().file_upload([file_name], [path = 'upload_path'], *[jpg, png, gif, ...])
   ```
 
 ## Encryption
   ```
   from system import Encryption
 
-  Encryption().crypt([schema_id], [word], [salt = 'yoursalt'], [rounds = 1000], ...)
+  Encryption().crypt([schema_id], [word], **[[salt = 'yoursalt'], [rounds = 1000], ...])
   ```

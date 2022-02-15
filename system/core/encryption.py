@@ -2,9 +2,6 @@ from passlib.hash import bcrypt, sha256_crypt, sha512_crypt, md5_crypt, sha1_cry
 from application import salt
 
 class Encryption():
-    def __init__(self):
-        pass
-
     def crypt(self, schema, word, **options):
         try:
             options['salt']

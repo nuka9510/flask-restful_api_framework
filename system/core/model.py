@@ -4,11 +4,7 @@ from application import db
 
 class Model():
     def __init__(self):
-        try:
-            self.con = mysql.connector.connect(**db)
-            self.cur = self.con.cursor()
-        except mysql.connector.Error as err:
-            return err
+        self.connect()
 
     def connect(self):
         try:
@@ -30,7 +26,7 @@ class Model():
         for val in iter(self.cur.fetchall()):
             row = list()
             for i in val:
-                row.append(self.json_serialize(i))
+                row.append(self.json_convert(i))
 
             result.append(dict(zip(column_names, row)))
 
@@ -40,14 +36,14 @@ class Model():
         column_names = self.cur.column_names
         row = list()
         for val in self.cur.fetchone():
-            row.append(self.json_serialize(val))
+            row.append(self.json_convert(val))
         return dict(zip(column_names, row))
 
     def close(self):
         self.cur.close()
         self.con.close()
 
-    def json_serialize(self, value):
+    def json_convert(self, value):
         if isinstance(value, datetime.date):
             return value.strftime('%Y-%m-%d %H:%M:%S')
         elif isinstance(value, decimal.Decimal):
