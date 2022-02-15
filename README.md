@@ -1,4 +1,4 @@
-# my_python_restapi_framework
+# python_restapi_framework
 
 ## 사용 라이브러리 (*필수 설치)
 * flask
@@ -61,10 +61,6 @@
           self.close()
           return res
   ```
-* application/models/\__init__.py
-  ```
-  from .Example_Model import Example_Model as Example_Model
-  ```
 
 ### query 실행
   ```
@@ -103,11 +99,4 @@
 
   encryption = Encryption()
   encryption.crypt([schema_id], [word], **[salt = [salt], rounds = [rounds:int], ...])
-  ```
-
-## Util
-  ```
-  from system import Util
-
-  util = Util()
   ```
