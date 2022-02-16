@@ -12,7 +12,7 @@ config = {
         'SECRET_KEY': None, # $ python -c "import secrets; print(secrets.token_hex())"
         'SESSION_COOKIE_NAME': 'session',
         'SESSION_COOKIE_DOMAIN': None,
-        'SESSION_COOKIE_PATH': '/application/sessions',
+        'SESSION_COOKIE_PATH': None,
         'SESSION_COOKIE_HTTPONLY': True,
         'SESSION_COOKIE_SECURE': False,
         'SESSION_COOKIE_SAMESITE': None,
