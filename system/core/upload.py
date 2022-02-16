@@ -1,4 +1,4 @@
-import os
+import os, re
 from flask import request
 from werkzeug.utils import secure_filename
 from application import config
@@ -38,8 +38,8 @@ class Upload():
             return {
                 'result': flag,
                 'file_name': f'{options["file_name"]}{file_ext}',
-                'file_path': options['upload_path'],
-                'full_path': full_path,
+                'file_path': '/'+re.sub('\\\\', '/', options['upload_path']),
+                'full_path': '/'+re.sub('\\\\', '/', full_path),
                 'raw_name': options['file_name'],
                 'orig_name': orig_name,
                 'file_ext': file_ext,

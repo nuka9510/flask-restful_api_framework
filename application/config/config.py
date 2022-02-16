@@ -32,5 +32,6 @@ config = {
         'MAX_COOKIE_SIZE': 4093
     },
     'ENCRYPTION_SALT': '[YOURSALT]',
-    'UPLOAD_PATH': '/uploads'
+    'UPLOAD_PATH': '/uploads',
+    'XSS_FILTER': False 
 }
