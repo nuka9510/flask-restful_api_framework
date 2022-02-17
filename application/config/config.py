@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 
 config = {
@@ -31,7 +32,8 @@ config = {
         'EXPLAIN_TEMPLATE_LOADING': False,
         'MAX_COOKIE_SIZE': 4093
     },
-    'ENCRYPTION_SALT': '[YOURSALT]',
-    'UPLOAD_PATH': '/uploads',
-    'XSS_FILTER': False 
+    'ENCRYPTION_SALT': 'degitalheraldstudybattle',
+    'UPLOAD_PATH': os.path.join('[UPLOAD_PATH]'),
+    'XSS_FILTER': True,
+    'SB_SESSION_PATH': os.path.join('application', 'sb_sessions')
 }

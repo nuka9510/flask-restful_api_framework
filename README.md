@@ -97,6 +97,17 @@
   ```
   from system import Encryption
 
-  encryption = Encryption()
-  encryption.crypt([schema_id], [word], **[salt = [salt], rounds = [rounds:int], ...])
+  encryption = Encryption([schema:default=sha256])
+  encryption.crypt([word], **[salt = [salt], rounds = [rounds:int], ...])
+  ```
+
+## Session
+  ```
+  from system import Session
+
+  session = Session()
+  session.set([key], [value])
+  session.get([key])
+  session.pop([key])
+  session.clear()
   ```

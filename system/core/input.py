@@ -22,7 +22,8 @@ class Input():
                         self.args[name][i] = self.json_str_convert(self.args[name][i])
                         self.args[name][i] = ast.literal_eval(self.args[name][i])
         except KeyError:
-            self.args[name] = self.xss_filter(self.args[name])
+            if type(self.args[name]) == str:
+                self.args[name] = self.xss_filter(self.args[name])
 
         return self.args[name]
 

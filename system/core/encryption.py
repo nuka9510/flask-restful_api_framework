@@ -2,13 +2,21 @@ from passlib.hash import bcrypt, sha256_crypt, sha512_crypt, md5_crypt, sha1_cry
 from application import config
 
 class Encryption():
-    def crypt(self, schema, word, **options):
+    def __init__(self, schema = 'sha256'):
+        self.schema = schema
+
+    def crypt(self, word, **options):
+        try:
+            self.schema = options['schema']
+        except KeyError:
+            pass
+            
         try:
             options['salt']
         except KeyError:
             options['salt'] = config['ENCRYPTION_SALT']
-            
-        if schema == 'bcrypt':
+
+        if self.schema == 'bcrypt':
             options['salt'] = options['salt'][0:22]
 
             try:
@@ -32,7 +40,7 @@ class Encryption():
                 options['relaxed'] = False
             
             return bcrypt.encrypt(bytes(word, 'utf-8'), **options)
-        elif schema == 'sha256':
+        elif self.schema == 'sha256':
             options['salt'] = options['salt'][0:16]
 
             try:
@@ -46,7 +54,7 @@ class Encryption():
                 options['relaxed'] = False
 
             return sha256_crypt.encrypt(bytes(word, 'utf-8'), **options)
-        elif schema == 'sha512':
+        elif self.schema == 'sha512':
             options['salt'] = options['salt'][0:16]
 
             try:
@@ -60,7 +68,7 @@ class Encryption():
                 options['relaxed'] = False
 
             return sha512_crypt.encrypt(bytes(word, 'utf-8'), **options)
-        elif schema == 'md5':
+        elif self.schema == 'md5':
             options['salt'] = options['salt'][0:8]
 
             try:
@@ -74,7 +82,7 @@ class Encryption():
                 options['relaxed'] = False
 
             return md5_crypt.encrypt(bytes(word, 'utf-8'), **options)
-        elif schema == 'sha1':
+        elif self.schema == 'sha1':
             options['salt'] = options['salt'][0:8]
 
             try:

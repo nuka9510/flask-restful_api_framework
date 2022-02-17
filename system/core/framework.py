@@ -3,4 +3,5 @@ from application import config
 
 app = Flask(__name__)
 
-app.config = config['app']
+for key in config['app']:
+    app.config[key] = config['app'][key]
