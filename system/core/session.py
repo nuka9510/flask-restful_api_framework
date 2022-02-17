@@ -6,7 +6,6 @@ class Session(Input):
     def __init__(self):
         super().__init__()
         self.__session_id = None
-        self.__session_path = None
 
     def __set_session_id(self):
         self.__session_id = ''
@@ -28,8 +27,7 @@ class Session(Input):
                 self.__session_id = self.arg('sb_session', location='cookies')
 
     def __set_session_path(self):
-        if not self.__session_path:
-            self.__session_path = os.path.join(config['SB_SESSION_PATH'], f'sb_session{self.__session_id}')
+        self.__session_path = os.path.join(config['SB_SESSION_PATH'], f'sb_session{self.__session_id}')
 
     def set(self, key, value):
         self.__get_session_id()
@@ -104,4 +102,9 @@ class Session(Input):
         os.remove(self.__session_path)
     
     def session_id(self):
-        return self.__session_id
+        result = self.__session_id
+        self.close()
+        return result
+
+    def close(self):
+        self.__session_id = None
