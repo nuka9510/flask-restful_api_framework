@@ -110,6 +110,7 @@
   session.get([key])
   session.pop([key])
   session.clear()
+  session.close()
   ```
 
 ## Header

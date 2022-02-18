@@ -23,16 +23,25 @@ class Session(Input):
 
     def __get_session_id(self):
         if not self.__session_id:
-            if config['SB_SESSION_STORAGE'] == 'headers':
-                self.__session_id = self.arg('sb_session', location='headers')
-            elif config['SB_SESSION_STORAGE'] == 'cookies':
-                self.__session_id = self.arg('sb_session', location='cookies')
+            self.__session_id = self.arg('sb_session', location=config['SB_SESSION_STORAGE'])
 
     def __set_session_path(self):
-        self.__is_clear = False
+        if not self.__session_id:
+            self.__get_session_id()
+            self.__set_session_path()
+        else:
+            if not self.__session_path:
+                self.__session_path = os.path.join(config['SB_SESSION_PATH'], f'sb_session{self.__session_id}')
 
-        if not self.__session_path:
-            self.__session_path = os.path.join(config['SB_SESSION_PATH'], f'sb_session{self.__session_id}')
+    def _set_header(self):
+        session_id = self.__session_id
+
+        self.close()
+
+        if config['SB_SESSION_STORAGE'] == 'headers':
+            return ('sb_session', session_id)
+        elif config['SB_SESSION_STORAGE'] == 'cookies':
+            return ('Set-Cookie', f'sb_session='+(session_id if not session_id is None else '; Expires=0'))
 
     def set(self, key, value):
         self.__get_session_id()
@@ -103,11 +112,16 @@ class Session(Input):
     def clear(self):
         self.__get_session_id()
         self.__set_session_path()
+        os.remove(self.__session_path)
 
         self.__is_clear = True
         self.__session_id = None
+        self.__session_path = None
 
-        os.remove(self.__session_path)
+    def close(self):
+        self.__is_clear = False
+        self.__session_id = None
+        self.__session_path = None
     
     def session_id(self):
         result = None
@@ -118,9 +132,3 @@ class Session(Input):
             result = self.__session_id
 
         return result
-
-    def _set_header(self):
-        if config['SB_SESSION_STORAGE'] == 'headers':
-            return ('sb_session', self.__session_id)
-        elif config['SB_SESSION_STORAGE'] == 'cookies':
-            return ('Set-Cookie', f'sb_session='+(self.__session_id if not self.__session_id is None else '; Expires=0'))
