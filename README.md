@@ -1,4 +1,4 @@
-# python_restapi_framework
+# flask-restful_api_framework
 
 ## 사용 라이브러리 (*필수 설치)
 * flask
