@@ -77,6 +77,25 @@
   self.close()
   ```
 
+## Util
+* application/utils/Example_Util.py
+  ```
+  class Example_Util():
+    [YOUR_UTIL_FUNCTION]
+  ```
+* application/utils/\__init__.py
+  ```
+  from .Example_Util import Example_Util as Example_Util
+  ```
+###
+  ```
+  from application.utils import Example_Util
+
+  util = Example_Util()
+
+  util.[YOUR_UTIL_FUNCTION]
+  ```
+
 ## Input
   ```
   from system import Input
@@ -90,6 +109,7 @@
   from system import Upload
 
   upload = Upload()
+
   upload.file_upload([file_name], *[jpg, png, gif, ...], **[upload_path = [upload_path], file_name = [file_name]])
   ```
 
@@ -98,6 +118,7 @@
   from system import Encryption
 
   encryption = Encryption([schema:default=sha256])
+
   encryption.crypt([word], **[salt = [salt], rounds = [rounds:int], ...])
   ```
 
@@ -106,6 +127,7 @@
   from system import Session
 
   session = Session()
+
   session.set([key], [value])
   session.get([key])
   session.pop([key])
@@ -118,6 +140,7 @@
   from system import Header
 
   header = Header()
+
   header.set([key], [value])
   header.get([session:class:default=None])
   ```
