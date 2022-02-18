@@ -5,7 +5,9 @@ from system import Input
 class Session(Input):
     def __init__(self):
         super().__init__()
+        self.__is_clear = False
         self.__session_id = None
+        self.__session_path = None
 
     def __set_session_id(self):
         self.__session_id = ''
@@ -21,13 +23,16 @@ class Session(Input):
 
     def __get_session_id(self):
         if not self.__session_id:
-            self.__session_id = self.arg('sb_session', location='headers')
-
-            if not self.__session_id:
+            if config['SB_SESSION_STORAGE'] == 'headers':
+                self.__session_id = self.arg('sb_session', location='headers')
+            elif config['SB_SESSION_STORAGE'] == 'cookies':
                 self.__session_id = self.arg('sb_session', location='cookies')
 
     def __set_session_path(self):
-        self.__session_path = os.path.join(config['SB_SESSION_PATH'], f'sb_session{self.__session_id}')
+        self.__is_clear = False
+
+        if not self.__session_path:
+            self.__session_path = os.path.join(config['SB_SESSION_PATH'], f'sb_session{self.__session_id}')
 
     def set(self, key, value):
         self.__get_session_id()
@@ -88,7 +93,7 @@ class Session(Input):
         r.pop(key)
 
         if not r:
-            os.remove(self.__session_path)
+            self.clear()
         else:
             f = open(self.__session_path, 'w')
 
@@ -99,12 +104,23 @@ class Session(Input):
         self.__get_session_id()
         self.__set_session_path()
 
+        self.__is_clear = True
+        self.__session_id = None
+
         os.remove(self.__session_path)
     
     def session_id(self):
-        result = self.__session_id
-        self.close()
+        result = None
+
+        if not self.__is_clear:
+            self.__get_session_id()
+
+            result = self.__session_id
+
         return result
 
-    def close(self):
-        self.__session_id = None
+    def _set_header(self):
+        if config['SB_SESSION_STORAGE'] == 'headers':
+            return ('sb_session', self.__session_id)
+        elif config['SB_SESSION_STORAGE'] == 'cookies':
+            return ('Set-Cookie', f'sb_session='+(self.__session_id if not self.__session_id is None else '; Expires=0'))

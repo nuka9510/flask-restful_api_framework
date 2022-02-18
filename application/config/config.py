@@ -35,5 +35,6 @@ config = {
     'ENCRYPTION_SALT': 'degitalheraldstudybattle',
     'UPLOAD_PATH': os.path.join('[UPLOAD_PATH]'),
     'XSS_FILTER': True,
-    'SB_SESSION_PATH': os.path.join('application', 'sb_sessions')
+    'SB_SESSION_PATH': os.path.join('application', 'sb_sessions'),
+    'SB_SESSION_STORAGE': 'cookies'
 }

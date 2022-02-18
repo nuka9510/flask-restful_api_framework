@@ -111,3 +111,12 @@
   session.pop([key])
   session.clear()
   ```
+
+## Header
+  ```
+  from system import Header
+
+  header = Header()
+  header.set([key], [value])
+  header.get([session:class:default=None])
+  ```
