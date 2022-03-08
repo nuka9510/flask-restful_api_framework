@@ -61,7 +61,6 @@
           self.close()
           return res
   ```
-
 ### query 실행
   ```
   self.execute([sql], *[data, ...])
@@ -111,6 +110,22 @@
   upload = Upload()
 
   upload.file_upload([file_name], *[jpg, png, gif, ...], **[upload_path = [upload_path], file_name = [file_name]])
+  ```
+### 파일 업로드
+  ```
+  upload.file_upload([file_name], *[jpg, png, gif, ...], **[upload_path = [upload_path], file_name = [file_name]])
+  ```
+  * return
+  ```
+  {
+    'result': True, // bool
+    'file_name': 'file_name.jpg', // string
+    'file_path': '/file_path', //string
+    'full_path': '/file_path/file_name.jpg', // string
+    'raw_name': 'file_name', // string
+    'orig_name': 'file_name', // string
+    'file_ext': '.jpg' // string
+  }
   ```
 
 ## Encryption
