@@ -100,6 +100,7 @@
   from system import Input
 
   input = Input()
+
   input.arg([param_name], [data_type])
   ```
 
