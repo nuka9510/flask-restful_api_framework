@@ -5,7 +5,7 @@ class Header():
     def set(self, key, value):
         self.__headers.append((key, value))
 
-    def get(self, session = None):
+    def get(self, session=None):
         result = self.__headers
         self.__headers = []
 

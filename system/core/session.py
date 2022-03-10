@@ -54,7 +54,7 @@ class Session(Input):
             self.__set_session_path()
 
         if not os.path.exists(config['SB_SESSION_PATH']):
-            os.makedirs(config['SB_SESSION_PATH'], mode = 0o777)
+            os.makedirs(config['SB_SESSION_PATH'], mode=0o777)
         
         if not os.path.exists(self.__session_path):
             r = {

@@ -1,57 +1,50 @@
-import mysql.connector, decimal, datetime
-from mysql.connector import errorcode
-from application import db
+import os, re
+from flask import request
+from werkzeug.utils import secure_filename
+from application import config
 
-class Model():
-    def __init__(self):
-        self.connect()
+class Upload():
+    def file_upload(self, name, *allowed_extensions, **options):
+        flag = False
+        file = request.files[name]
 
-    def connect(self):
         try:
-            self.con = mysql.connector.connect(**db)
-            self.cur = self.con.cursor()
-        except mysql.connector.Error as err:
-            return err
+            options['upload_path']
+        except KeyError:
+            options['upload_path'] = config['UPLOAD_PATH']
 
-    def execute(self, sql, *data):
-        if not self.con.is_connected():
-            self.connect()
+        if not os.path.exists(options['upload_path']):
+            os.makedirs(options['upload_path'], mode=0o777)
+
+        if allowed_extensions:
+            extensions = set(allowed_extensions)
+
+            flag = '.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in extensions
+        else:
+            flag = True
         
-        if not data:
-            self.cur.execute(sql)
+        if flag:
+            orig_name = secure_filename(file.filename).rsplit('.', 1)[0]
+            file_ext = f'.{file.filename.rsplit(".", 1)[1].lower()}'
+
+            try:
+                options['file_name']
+            except KeyError:
+                options['file_name'] = orig_name
+
+            full_path = os.path.join(options['upload_path'], f'{options["file_name"]}{file_ext}')
+            file.save(full_path)
+
+            return {
+                'result': flag,
+                'file_name': f'{options["file_name"]}{file_ext}',
+                'file_path': '/'+re.sub(r'\\', '/', options['upload_path']),
+                'full_path': '/'+re.sub(r'\\', '/', full_path),
+                'raw_name': options['file_name'],
+                'orig_name': orig_name,
+                'file_ext': file_ext,
+            }
         else:
-            self.cur.execute(sql, data)
-
-    def fetchall(self):
-        column_names = self.cur.column_names
-        result = list()
-
-        for val in iter(self.cur.fetchall()):
-            row = list()
-            for i in val:
-                row.append(self.json_convert(i))
-
-            result.append(dict(zip(column_names, row)))
-
-        return result
-
-    def fetchone(self):
-        column_names = self.cur.column_names
-        row = list()
-
-        for val in self.cur.fetchone():
-            row.append(self.json_convert(val))
-
-        return dict(zip(column_names, row))
-
-    def close(self):
-        self.cur.close()
-        self.con.close()
-
-    def json_convert(self, value):
-        if isinstance(value, datetime.date):
-            return value.strftime('%Y-%m-%d %H:%M:%S')
-        elif isinstance(value, decimal.Decimal):
-            return str(value)
-        else:
-            return value
+            return {
+                'result': flag
+            }

@@ -2,7 +2,7 @@ from passlib.hash import bcrypt, sha256_crypt, sha512_crypt, md5_crypt, sha1_cry
 from application import config
 
 class Encryption():
-    def __init__(self, schema = 'sha256'):
+    def __init__(self, schema='sha256'):
         self.schema = schema
 
     def crypt(self, word, **options):
