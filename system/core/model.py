@@ -17,11 +17,15 @@ class Model():
         if not self.con.is_connected():
             self.connect()
         
-        self.cur.execute(sql, *data)
+        if not data:
+            self.cur.execute(sql)
+        else:
+            self.cur.execute(sql, data)
 
     def fetchall(self):
         column_names = self.cur.column_names
         result = list()
+
         for val in iter(self.cur.fetchall()):
             row = list()
             for i in val:
@@ -34,8 +38,10 @@ class Model():
     def fetchone(self):
         column_names = self.cur.column_names
         row = list()
+
         for val in self.cur.fetchone():
             row.append(self.json_convert(val))
+
         return dict(zip(column_names, row))
 
     def close(self):

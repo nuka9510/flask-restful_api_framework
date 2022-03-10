@@ -7,11 +7,6 @@ class Input():
         self.input = reqparse.RequestParser()
 
     def arg(self, name, **options):
-        try:
-            self.input
-        except AttributeError:
-            self.input = reqparse.RequestParser()
-
         self.input.add_argument(name, **options)
         self.args = self.input.parse_args()
 
