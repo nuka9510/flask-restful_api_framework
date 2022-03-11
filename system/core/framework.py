@@ -4,8 +4,8 @@ from application import config
 
 app = Flask(__name__)
 
-for key in config['app']:
-    app.config[key] = config['app'][key]
+for key in config['APP']:
+    app.config[key] = config['APP'][key]
 
 if not app.debug:
     from logging import FileHandler

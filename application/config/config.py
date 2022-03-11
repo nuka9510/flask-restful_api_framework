@@ -2,7 +2,7 @@ import os, logging
 from datetime import datetime, timedelta
 
 config = {
-    'app':{
+    'APP':{
         'ENV': 'production',
         'DEBUG': True,
         'TESTING': False,
