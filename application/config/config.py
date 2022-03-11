@@ -1,5 +1,5 @@
-import os
-from datetime import timedelta
+import os, logging
+from datetime import datetime, timedelta
 
 config = {
     'app':{
@@ -32,9 +32,22 @@ config = {
         'EXPLAIN_TEMPLATE_LOADING': False,
         'MAX_COOKIE_SIZE': 4093
     },
-    'ENCRYPTION_SALT': 'degitalheraldstudybattle',
+    'ENCRYPTION_SALT': '[YOURT_SALT_KEY]',
     'UPLOAD_PATH': os.path.join('[UPLOAD_PATH]'),
     'XSS_FILTER': True,
     'SB_SESSION_PATH': os.path.join('application', 'sb_sessions'),
-    'SB_SESSION_STORAGE': 'cookies'
+    'SB_SESSION_STORAGE': 'cookies',
+    'LOG_PATH': os.path.join('application', 'logs'),
+    'LOG_NAME': datetime.now().strftime('log-%Y-%m-%d.log'),
+    'LOG_LEVEL': logging.WARNING,
+    'LOG_FORMAT': logging.Formatter('%(asctime)s-%(levelname)s-%(message)s'),
+    'DATABASE': {
+        'host': "[HOST]",
+        'port': "[PORT]",
+        'user': "[USER]",
+        'password': "[PASSWORD]",
+        'database': "[DATABASE]",
+        # 'autocommit': True,
+        # 'buffered': True,
+    }
 }

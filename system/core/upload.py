@@ -4,7 +4,23 @@ from werkzeug.utils import secure_filename
 from application import config
 
 class Upload():
+    def __init__(self):
+        '''
+        method
+
+        file_upload(name: str[, *allowed_extensions: str][, **options])
+        '''
+
     def file_upload(self, name, *allowed_extensions, **options):
+        '''
+        file_upload(name[, *allowed_extensions: str][, **options])
+
+        *allowed_extensions['jpg', 'gif', 'png', ...]
+
+        **options[upload_path: str, file_name: str]
+
+        name으로 온 file을 upload한다.
+        '''
         flag = False
         file = request.files[name]
 

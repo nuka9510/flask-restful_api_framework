@@ -23,7 +23,7 @@
   ```
   from system.core.controller import *
 
-  bp = Blueprint('Example', __name__[, url_prefix = '/example'])
+  bp = Blueprint('Example', __name__[, url_prefix='/example'])
   api = Api(bp)
 
   @api.resource('/')
@@ -63,7 +63,7 @@
   ```
 ### query 실행
   ```
-  self.execute([sql], *[data, ...])
+  self.execute(sql[, *data, ...])
   ```
 ### query 결과
   ```
@@ -80,7 +80,7 @@
 * application/utils/Example_Util.py
   ```
   class Example_Util():
-    [YOUR_UTIL_FUNCTION]
+    [UTIL_METHOD]
   ```
 * application/utils/\__init__.py
   ```
@@ -92,7 +92,7 @@
 
   util = Example_Util()
 
-  util.[YOUR_UTIL_FUNCTION]
+  util.[UTIL_METHOD]
   ```
 
 ## Input
@@ -101,7 +101,7 @@
 
   input = Input()
 
-  input.arg([param_name], [data_type])
+  input.arg(name[, **options])
   ```
 
 ## Upload
@@ -110,11 +110,11 @@
 
   upload = Upload()
 
-  upload.file_upload([file_name], *[jpg, png, gif, ...], **[upload_path = [upload_path], file_name = [file_name]])
+  upload.file_upload(name[, *allowed_extensions][, **options])
   ```
 ### 파일 업로드
   ```
-  upload.file_upload([file_name], *[jpg, png, gif, ...], **[upload_path = [upload_path], file_name = [file_name]])
+  upload.file_upload(name[, *allowed_extensions][, **options])
   ```
   * return
   ```
@@ -133,9 +133,9 @@
   ```
   from system import Encryption
 
-  encryption = Encryption([schema:default=sha256])
+  encryption = Encryption([schema='sha256'])
 
-  encryption.crypt([word], **[salt = [salt], rounds = [rounds:int], ...])
+  encryption.crypt(word[, **options])
   ```
 
 ## Session
@@ -144,9 +144,9 @@
 
   session = Session()
 
-  session.set([key], [value])
-  session.get([key])
-  session.pop([key])
+  session.set(key, value)
+  session.get(key)
+  session.pop(key)
   session.clear()
   session.close()
   ```
@@ -157,6 +157,6 @@
 
   header = Header()
 
-  header.set([key], [value])
-  header.get([session:class:default=None])
+  header.set(key, value)
+  header.get([session=None])
   ```

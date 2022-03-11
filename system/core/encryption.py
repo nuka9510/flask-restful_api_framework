@@ -3,9 +3,23 @@ from application import config
 
 class Encryption():
     def __init__(self, schema='sha256'):
+        '''
+        schema: str
+
+        method
+        
+        crypt(word: str[, **options])
+        '''
         self.schema = schema
 
     def crypt(self, word, **options):
+        '''
+        crypt(word: str[, **options])
+
+        **options[salt: str, rounds: int, ident: str, truncate_error: bool, relaxed: bool, salt_size: int]
+
+        word를 암호화 한다.
+        '''
         try:
             self.schema = options['schema']
         except KeyError:

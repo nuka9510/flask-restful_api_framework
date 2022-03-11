@@ -4,6 +4,19 @@ from system import Input
 
 class Session(Input):
     def __init__(self):
+        '''
+        method
+
+        session_id()
+
+        set(key: str, value: str|int|...)
+
+        get(key: str)
+
+        pop(key: str)
+
+        clear()
+        '''
         super().__init__()
         self.__is_clear = False
         self.__session_id = None
@@ -23,7 +36,10 @@ class Session(Input):
 
     def __get_session_id(self):
         if not self.__session_id:
-            self.__session_id = self.arg('sb_session', location=config['SB_SESSION_STORAGE'])
+            if config['SB_SESSION_STORAGE'] == 'headers':
+                self.__session_id = self.arg('Authorization', location=config['SB_SESSION_STORAGE'])
+            else:
+                self.__session_id = self.arg('sb_session', location=config['SB_SESSION_STORAGE'])
 
     def __set_session_path(self):
         if not self.__session_id:
@@ -33,10 +49,15 @@ class Session(Input):
             if not self.__session_path:
                 self.__session_path = os.path.join(config['SB_SESSION_PATH'], f'sb_session{self.__session_id}')
 
+    def __close(self):
+        self.__is_clear = False
+        self.__session_id = None
+        self.__session_path = None
+
     def _set_header(self):
         session_id = self.__session_id
 
-        self.close()
+        self.__close()
 
         if config['SB_SESSION_STORAGE'] == 'headers':
             return ('sb_session', session_id)
@@ -44,6 +65,11 @@ class Session(Input):
             return ('Set-Cookie', f'sb_session='+(session_id if not session_id is None else '; Expires=0'))
 
     def set(self, key, value):
+        '''
+        set(key: str, value: str|int|...)
+
+        session에 key, value를 담는다.
+        '''
         self.__get_session_id()
 
         r = None
@@ -54,7 +80,7 @@ class Session(Input):
             self.__set_session_path()
 
         if not os.path.exists(config['SB_SESSION_PATH']):
-            os.makedirs(config['SB_SESSION_PATH'], mode=0o777)
+            os.makedirs(config['SB_SESSION_PATH'])
         
         if not os.path.exists(self.__session_path):
             r = {
@@ -74,6 +100,11 @@ class Session(Input):
         f.close()
 
     def get(self, key):
+        '''
+        get(key: str)
+
+        session에서 해당 key의 value를 가져온다.
+        '''
         self.__get_session_id()
         self.__set_session_path()
 
@@ -92,6 +123,11 @@ class Session(Input):
         return r
 
     def pop(self, key):
+        '''
+        pop(key: str)
+
+        session에서 해당 key를 지운다.
+        '''
         self.__get_session_id()
         self.__set_session_path()
 
@@ -110,6 +146,11 @@ class Session(Input):
             f.close()
 
     def clear(self):
+        '''
+        clear()
+
+        session을 지운다.
+        '''
         self.__get_session_id()
         self.__set_session_path()
         os.remove(self.__session_path)
@@ -117,13 +158,13 @@ class Session(Input):
         self.__is_clear = True
         self.__session_id = None
         self.__session_path = None
-
-    def close(self):
-        self.__is_clear = False
-        self.__session_id = None
-        self.__session_path = None
     
     def session_id(self):
+        '''
+        session_id()
+
+        session의 id를 가져온다.
+        '''
         result = None
 
         if not self.__is_clear:
