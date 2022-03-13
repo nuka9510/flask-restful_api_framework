@@ -1,4 +1,4 @@
-import os, ast, string, random
+import os, re, ast, string, random
 from application import config
 from system import Input
 
@@ -37,7 +37,7 @@ class Session(Input):
     def __get_session_id(self):
         if not self.__session_id:
             if config['SB_SESSION_STORAGE'] == 'headers':
-                self.__session_id = self.arg('Authorization', location=config['SB_SESSION_STORAGE'])
+                self.__session_id = re.sub('^Bearer ', '', self.arg('Authorization', location=config['SB_SESSION_STORAGE']))
             else:
                 self.__session_id = self.arg('sb_session', location=config['SB_SESSION_STORAGE'])
 
