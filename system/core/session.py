@@ -29,17 +29,23 @@ class Session(Input):
         for i in range(50):
             self.__session_id += random.choice(string_pool)
 
-        if os.path.exists(os.path.join(config['SB_SESSION_PATH'], f'sb_session{self.__session_id}')):
+        if os.path.exists(os.path.join(config['SESSION_PATH'], f'{config["SESSION_NAME"]}{self.__session_id}')):
             self.__set_session_id()
         else:
             self.__set_session_path()
 
     def __get_session_id(self):
         if not self.__session_id:
-            if config['SB_SESSION_STORAGE'] == 'headers':
-                self.__session_id = re.sub('^Bearer ', '', self.arg('Authorization', location=config['SB_SESSION_STORAGE']))
+            if config['SESSION_STORAGE'] == 'headers':
+                session_id = self.arg('Authorization', location=config['SESSION_STORAGE'])
+
+                if session_id:
+                    self.__session_id = re.sub('^Bearer ', '', session_id)
             else:
-                self.__session_id = self.arg('sb_session', location=config['SB_SESSION_STORAGE'])
+                session_id = self.arg(config['SESSION_NAME'], location=config['SESSION_STORAGE'])
+
+                if session_id:
+                    self.__session_id = session_id
 
     def __set_session_path(self):
         if not self.__session_id:
@@ -47,7 +53,7 @@ class Session(Input):
             self.__set_session_path()
         else:
             if not self.__session_path:
-                self.__session_path = os.path.join(config['SB_SESSION_PATH'], f'sb_session{self.__session_id}')
+                self.__session_path = os.path.join(config['SESSION_PATH'], f'{config["SESSION_NAME"]}{self.__session_id}')
 
     def __close(self):
         self.__is_clear = False
@@ -59,10 +65,10 @@ class Session(Input):
 
         self.__close()
 
-        if config['SB_SESSION_STORAGE'] == 'headers':
-            return ('sb_session', session_id)
-        elif config['SB_SESSION_STORAGE'] == 'cookies':
-            return ('Set-Cookie', f'sb_session='+(session_id if not session_id is None else '; Expires=0'))
+        if config['SESSION_STORAGE'] == 'headers':
+            return (config['SESSION_NAME'], session_id)
+        elif config['SESSION_STORAGE'] == 'cookies':
+            return ('Set-Cookie', f'{config["SESSION_NAME"]}='+(session_id if not session_id is None else '; Expires=0'))
 
     def set(self, key, value):
         '''
@@ -79,8 +85,8 @@ class Session(Input):
         else:
             self.__set_session_path()
 
-        if not os.path.exists(config['SB_SESSION_PATH']):
-            os.makedirs(config['SB_SESSION_PATH'])
+        if not os.path.exists(config['SESSION_PATH']):
+            os.makedirs(config['SESSION_PATH'])
         
         if not os.path.exists(self.__session_path):
             r = {

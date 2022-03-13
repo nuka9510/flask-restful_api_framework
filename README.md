@@ -160,3 +160,14 @@
   header.set(key, value)
   header.get([session=None])
   ```
+
+## Logging
+  ```
+  from system import logger
+
+  logger.debug(message)
+  logger.info(message)
+  logger.warning(message)
+  logger.error(message)
+  logger.critical(message)
+  ```

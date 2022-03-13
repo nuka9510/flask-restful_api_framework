@@ -14,6 +14,7 @@ if not app.debug:
         os.makedirs(config['LOG_PATH'])
 
     file_handler = FileHandler(filename=os.path.join(config['LOG_PATH'], config['LOG_NAME']))
-    file_handler.setLevel(config['LOG_LEVEL'])
     file_handler.setFormatter(config['LOG_FORMAT'])
+
+    app.logger.setLevel(config['LOG_LEVEL'])
     app.logger.addHandler(file_handler)
