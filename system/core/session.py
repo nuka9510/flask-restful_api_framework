@@ -29,7 +29,7 @@ class Session(Input):
         for i in range(50):
             self.__session_id += random.choice(string_pool)
 
-        if os.path.exists(os.path.join(config['SESSION_PATH'], f'{config["SESSION_NAME"]}{self.__session_id}')):
+        if os.path.exists(os.path.join(config['SESSION_PATH'], f"{config['SESSION_NAME']}{self.__session_id}")):
             self.__set_session_id()
         else:
             self.__set_session_path()
@@ -53,7 +53,7 @@ class Session(Input):
             self.__set_session_path()
         else:
             if not self.__session_path:
-                self.__session_path = os.path.join(config['SESSION_PATH'], f'{config["SESSION_NAME"]}{self.__session_id}')
+                self.__session_path = os.path.join(config['SESSION_PATH'], f"{config['SESSION_NAME']}{self.__session_id}")
 
     def __close(self):
         self.__is_clear = False
@@ -68,7 +68,7 @@ class Session(Input):
         if config['SESSION_STORAGE'] == 'headers':
             return (config['SESSION_NAME'], session_id)
         elif config['SESSION_STORAGE'] == 'cookies':
-            return ('Set-Cookie', f'{config["SESSION_NAME"]}='+(session_id if not session_id is None else '; Expires=0'))
+            return ('Set-Cookie', f"{config['SESSION_NAME']}="+(session_id if not session_id is None else '; Expires=0'))
 
     def set(self, key, value):
         '''

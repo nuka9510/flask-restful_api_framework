@@ -41,19 +41,19 @@ class Upload():
         
         if flag:
             orig_name = secure_filename(file.filename).rsplit('.', 1)[0]
-            file_ext = f'.{file.filename.rsplit(".", 1)[1].lower()}'
+            file_ext = f".{file.filename.rsplit('.', 1)[1].lower()}"
 
             try:
                 options['file_name']
             except KeyError:
                 options['file_name'] = orig_name
 
-            full_path = os.path.join(options['upload_path'], f'{options["file_name"]}{file_ext}')
+            full_path = os.path.join(options['upload_path'], f"{options['file_name']}{file_ext}")
             file.save(full_path)
 
             return {
                 'result': flag,
-                'file_name': f'{options["file_name"]}{file_ext}',
+                'file_name': f"{options['file_name']}{file_ext}",
                 'file_path': '/'+re.sub(r'\\', '/', options['upload_path']),
                 'full_path': '/'+re.sub(r'\\', '/', full_path),
                 'raw_name': options['file_name'],
