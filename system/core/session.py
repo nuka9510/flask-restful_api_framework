@@ -55,6 +55,12 @@ class Session(Input):
             if not self.__session_path:
                 self.__session_path = os.path.join(config['SESSION_PATH'], f"{config['SESSION_NAME']}{self.__session_id}")
 
+                if not os.path.exists(config['SESSION_PATH']):
+                    os.makedirs(config['SESSION_PATH'])
+
+                if not os.path.exists(self.__session_path):
+                    open(self.__session_path, 'w').close()
+
     def __close(self):
         self.__is_clear = False
         self.__session_id = None
@@ -85,25 +91,24 @@ class Session(Input):
         else:
             self.__set_session_path()
 
-        if not os.path.exists(config['SESSION_PATH']):
-            os.makedirs(config['SESSION_PATH'])
-        
-        if not os.path.exists(self.__session_path):
-            r = {
-                key: value
-            }
-        else:
-            f = open(self.__session_path, 'r')
-            r = f.readline()
+        f = open(self.__session_path, 'r')
+        r = f.readline()
+
+        if r:
             r = ast.literal_eval(r)
             r[key] = value
+        else:
+            r = dict(
+                key= value
+            )
 
-            f.close()
+        f.close()
 
         f = open(self.__session_path, 'w')
 
         f.write(str(r))
         f.close()
+        self.__close()
 
     def get(self, key):
         '''
@@ -125,6 +130,8 @@ class Session(Input):
                 pass
 
             f.close()
+
+        self.__close()
 
         return r
 
@@ -151,6 +158,8 @@ class Session(Input):
             f.write(str(r))
             f.close()
 
+        self.__close()
+
     def clear(self):
         '''
         clear()
@@ -176,6 +185,11 @@ class Session(Input):
         if not self.__is_clear:
             self.__get_session_id()
 
+            if not self.__session_id:
+                self.__set_session_id()
+            
             result = self.__session_id
+
+            self.__close()
 
         return result
