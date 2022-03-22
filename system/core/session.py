@@ -1,8 +1,9 @@
 import os, re, ast, string, random, datetime
+from flask import request
 from application import config
-from system import Input, logger
+from system import logger
 
-class Session(Input):
+class Session():
     def __init__(self):
         '''
         method
@@ -37,10 +38,14 @@ class Session(Input):
 
     def __get_session_id(self, flag = True):
         if not self.__session_id:
-            session_id = self.arg('Authorization', location='headers')
+            try:
+                session_id = request.headers['Authorization']
 
-            if session_id:
-                self.__session_id = re.sub('^Bearer ', '', session_id)
+                if session_id:
+                    self.__session_id = re.sub('^Bearer ', '', session_id)
+            except KeyError as e:
+                if 'HTTP_AUTHORIZATION' in e.args:
+                    logger.error("KeyError: request.headers['Authorization']")
 
         if flag:
             self.__set_session_path()

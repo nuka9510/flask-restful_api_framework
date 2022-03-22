@@ -1,5 +1,5 @@
 import ast, re
-from flask_restful import reqparse
+from flask import request
 from application import config
 
 class Input():
@@ -7,9 +7,10 @@ class Input():
         '''
         method
 
-        arg(name: str[, **options])
+        get(name: str[, **options])
+
+        post(name: str[, **options])
         '''
-        self.input = reqparse.RequestParser()
 
     def __xss_filter(self, val):
         if config['XSS_FILTER']:
@@ -31,31 +32,48 @@ class Input():
 
         return val
 
-    def arg(self, name, **options):
+    def get(self, name, default=None, action='store'):
         '''
-        arg(name: str[, **options])
+        get(name: str[, **options])
 
-        **options[type: str|int|..., action: str, location: str, default: str|int|..., ...]
-
-        Flask_RESTful
-
-        reqparse.Argument()
-
-        parameters
-
-        name으로 온 request값을 받는다.
+        **options[default=: str|int|..., action: str]
         '''
-        self.input.add_argument(name, **options)
-        self.args = self.input.parse_args()
+        result = default
 
-        try:
-            if options['action'] == 'append':
-                for i in range(len(self.args[name])):
-                    if re.search("^(\[|\{)", self.args[name][i]):
-                        self.args[name][i] = self.__json_convert(self.args[name][i])
-                        self.args[name][i] = ast.literal_eval(self.args[name][i])
-        except KeyError:
-            if type(self.args[name]) == str:
-                self.args[name] = self.__xss_filter(self.args[name])
+        if action == 'append':
+            result = request.args.getlist(name)
 
-        return self.args[name]
+            for i in range(len(result)):
+                if re.search("^(\[|\{)", result[i]):
+                    result[i] = self.__json_convert(result[i])
+                    result[i] = ast.literal_eval(result[i])
+        elif action == 'store':
+            result = request.args.get(name)
+
+            if type(result) == str:
+                result = self.__xss_filter(result)
+
+        return result
+
+    def post(self, name, default=None, action='store'):
+        '''
+        post(name: str[, **options])
+
+        **options[default=: str|int|..., action: str]
+        '''
+        result = default
+
+        if action == 'append':
+            result = request.form.getlist(name)
+
+            for i in range(len(result)):
+                if re.search("^(\[|\{)", result[i]):
+                    result[i] = self.__json_convert(result[i])
+                    result[i] = ast.literal_eval(result[i])
+        elif action == 'store':
+            result = request.form.get(name)
+
+            if type(result) == str:
+                result = self.__xss_filter(result)
+
+        return result

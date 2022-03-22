@@ -101,7 +101,8 @@
 
   input = Input()
 
-  input.arg(name[, **options])
+  input.get(name[, **options])
+  input.post(name[, **options])
   ```
 
 ## Upload
