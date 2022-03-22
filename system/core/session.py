@@ -59,7 +59,8 @@ class Session():
             if not os.path.exists(self.__session_path):
                 self.__close()
             else:
-                self.__session_utime()
+                if config['SESSION_EXPIRE']:
+                    self.__session_utime()
 
     def __set_session_path(self):
         if not self.__session_id:
