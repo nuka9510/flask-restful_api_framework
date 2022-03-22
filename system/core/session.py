@@ -1,6 +1,6 @@
-import os, re, ast, string, random
+import os, re, ast, string, random, datetime
 from application import config
-from system import Input
+from system import Input, logger
 
 class Session(Input):
     def __init__(self):
@@ -8,6 +8,8 @@ class Session(Input):
         method
 
         session_id()
+
+        session_exists()
 
         set(key: str, value: str|int|...)
 
@@ -18,7 +20,6 @@ class Session(Input):
         clear()
         '''
         super().__init__()
-        self.__is_clear = False
         self.__session_id = None
         self.__session_path = None
 
@@ -34,23 +35,30 @@ class Session(Input):
         else:
             self.__set_session_path()
 
-    def __get_session_id(self):
+    def __get_session_id(self, flag = True):
         if not self.__session_id:
-            if config['SESSION_STORAGE'] == 'headers':
-                session_id = self.arg('Authorization', location=config['SESSION_STORAGE'])
+            session_id = self.arg('Authorization', location='headers')
 
-                if session_id:
-                    self.__session_id = re.sub('^Bearer ', '', session_id)
+            if session_id:
+                self.__session_id = re.sub('^Bearer ', '', session_id)
+
+        if flag:
+            self.__set_session_path()
+
+            if config['SESSION_EXPIRE']:
+                if self.__session_id and self.__session_path:
+                    self.__session_utime()
+        else:
+            self.__session_path = os.path.join(config['SESSION_PATH'], f"{config['SESSION_NAME']}{self.__session_id}")
+
+            if not os.path.exists(self.__session_path):
+                self.__close()
             else:
-                session_id = self.arg(config['SESSION_NAME'], location=config['SESSION_STORAGE'])
-
-                if session_id:
-                    self.__session_id = session_id
+                self.__session_utime()
 
     def __set_session_path(self):
         if not self.__session_id:
-            self.__get_session_id()
-            self.__set_session_path()
+            self.__set_session_id()
         else:
             if not self.__session_path:
                 self.__session_path = os.path.join(config['SESSION_PATH'], f"{config['SESSION_NAME']}{self.__session_id}")
@@ -61,20 +69,15 @@ class Session(Input):
                 if not os.path.exists(self.__session_path):
                     open(self.__session_path, 'w').close()
 
+    def __session_utime(self):
+        if datetime.datetime.now() <= (datetime.datetime.fromtimestamp(os.stat(self.__session_path).st_atime) + config['SESSION_EXPIRE']):
+            os.utime(self.__session_path)
+        else:
+            self.clear()
+
     def __close(self):
-        self.__is_clear = False
         self.__session_id = None
         self.__session_path = None
-
-    def _set_header(self):
-        session_id = self.__session_id
-
-        self.__close()
-
-        if config['SESSION_STORAGE'] == 'headers':
-            return (config['SESSION_NAME'], session_id)
-        elif config['SESSION_STORAGE'] == 'cookies':
-            return ('Set-Cookie', f"{config['SESSION_NAME']}="+(session_id if not session_id is None else '; Expires=0'))
 
     def set(self, key, value):
         '''
@@ -84,31 +87,27 @@ class Session(Input):
         '''
         self.__get_session_id()
 
-        r = None
+        if self.__session_id and self.__session_path:
+            f = open(self.__session_path, 'r')
+            r = f.readline()
 
-        if not self.__session_id:
-            self.__set_session_id()
+            if r:
+                r = ast.literal_eval(r)
+                r[key] = value
+            else:
+                r = dict(
+                    key= value
+                )
+
+            f.close()
+
+            f = open(self.__session_path, 'w')
+
+            f.write(str(r))
+            f.close()
+            self.__close()
         else:
-            self.__set_session_path()
-
-        f = open(self.__session_path, 'r')
-        r = f.readline()
-
-        if r:
-            r = ast.literal_eval(r)
-            r[key] = value
-        else:
-            r = dict(
-                key= value
-            )
-
-        f.close()
-
-        f = open(self.__session_path, 'w')
-
-        f.write(str(r))
-        f.close()
-        self.__close()
+            self.set(key, value)
 
     def get(self, key):
         '''
@@ -117,21 +116,20 @@ class Session(Input):
         session에서 해당 key의 value를 가져온다.
         '''
         self.__get_session_id()
-        self.__set_session_path()
-
         r = None
 
-        if os.path.exists(self.__session_path):
-            f = open(self.__session_path, 'r')
+        if self.__session_id and self.__session_path:
+            if os.path.exists(self.__session_path):
+                f = open(self.__session_path, 'r')
 
-            try:
-                r = ast.literal_eval(f.readline())[key]
-            except KeyError:
-                pass
+                try:
+                    r = ast.literal_eval(f.readline())[key]
+                except KeyError:
+                    pass
 
-            f.close()
+                f.close()
 
-        self.__close()
+            self.__close()
 
         return r
 
@@ -142,23 +140,23 @@ class Session(Input):
         session에서 해당 key를 지운다.
         '''
         self.__get_session_id()
-        self.__set_session_path()
 
-        f = open(self.__session_path, 'r+')
-        r = ast.literal_eval(f.readline())
+        if self.__session_id and self.__session_path:
+            f = open(self.__session_path, 'r+')
+            r = ast.literal_eval(f.readline())
 
-        f.close()
-        r.pop(key)
-
-        if not r:
-            self.clear()
-        else:
-            f = open(self.__session_path, 'w')
-
-            f.write(str(r))
             f.close()
+            r.pop(key)
 
-        self.__close()
+            if not r:
+                self.clear()
+            else:
+                f = open(self.__session_path, 'w')
+
+                f.write(str(r))
+                f.close()
+
+            self.__close()
 
     def clear(self):
         '''
@@ -167,12 +165,10 @@ class Session(Input):
         session을 지운다.
         '''
         self.__get_session_id()
-        self.__set_session_path()
-        os.remove(self.__session_path)
 
-        self.__is_clear = True
-        self.__session_id = None
-        self.__session_path = None
+        if self.__session_id and self.__session_path:
+            os.remove(self.__session_path)
+            self.__close()
     
     def session_id(self):
         '''
@@ -180,16 +176,20 @@ class Session(Input):
 
         session의 id를 가져온다.
         '''
-        result = None
-
-        if not self.__is_clear:
-            self.__get_session_id()
-
-            if not self.__session_id:
-                self.__set_session_id()
-            
+        self.__get_session_id()
+        
+        if self.__session_id and self.__session_path:
             result = self.__session_id
 
             self.__close()
+
+            return result
+        else:
+            self.session_id()
+
+    def session_exists(self):
+        self.__get_session_id(False)
+        result = bool(self.__session_id)
+        self.__close()
 
         return result

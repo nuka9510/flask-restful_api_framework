@@ -144,21 +144,15 @@
 
   session = Session()
 
+  session.session_id()
+
+  -headers 'Authorization'= session_id
+
+  session.session_exists()
   session.set(key, value)
   session.get(key)
   session.pop(key)
   session.clear()
-  session.close()
-  ```
-
-## Header
-  ```
-  from system import Header
-
-  header = Header()
-
-  header.set(key, value)
-  header.get([session=None])
   ```
 
 ## Logging

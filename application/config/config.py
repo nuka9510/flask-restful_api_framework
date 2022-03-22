@@ -12,7 +12,7 @@ config = {
     'XSS_FILTER': True,
     'SESSION_NAME': 'session',
     'SESSION_PATH': os.path.join('application', 'sessions'),
-    'SESSION_STORAGE': 'cookies',
+    'SESSION_EXPIRE': timedelta(days=30),
     'LOG_PATH': os.path.join('application', 'logs'),
     'LOG_NAME': datetime.now().strftime('log-%Y-%m-%d.log'),
     'LOG_LEVEL': logging.WARNING,
