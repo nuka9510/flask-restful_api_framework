@@ -129,7 +129,13 @@ class Session():
                 f = open(self.__session_path, 'r')
 
                 try:
-                    r = ast.literal_eval(f.readline())[key]
+                    # r = ast.literal_eval(f.readline())[key]
+                    r = f.readline()
+                    
+                    if r:
+                        r = ast.literal_eval(r)[key]
+                    else:
+                        r = None
                 except KeyError:
                     pass
 
