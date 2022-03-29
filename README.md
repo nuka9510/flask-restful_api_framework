@@ -122,6 +122,7 @@
   {
     'result': True, // bool
     'file_name': 'file_name.jpg', // string
+    'file_size': 0, // int
     'file_path': '/file_path', //string
     'full_path': '/file_path/file_name.jpg', // string
     'raw_name': 'file_name', // string

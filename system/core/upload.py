@@ -25,7 +25,7 @@ class Upload():
         file = request.files[name]
 
         try:
-            options['upload_path']
+            options['upload_path'] = os.path.join(config['UPLOAD_PATH'], options['upload_path'])
         except KeyError:
             options['upload_path'] = config['UPLOAD_PATH']
 
@@ -49,11 +49,19 @@ class Upload():
                 options['file_name'] = orig_name
 
             full_path = os.path.join(options['upload_path'], f"{options['file_name']}{file_ext}")
+
+            file.stream.seek(0, 2)
+
+            file_size = file.stream.tell()
+
+            file.stream.seek(0)
+
             file.save(full_path)
 
             return {
                 'result': flag,
                 'file_name': f"{options['file_name']}{file_ext}",
+                'file_size': file_size,
                 'file_path': '/'+re.sub(r'\\', '/', options['upload_path']),
                 'full_path': '/'+re.sub(r'\\', '/', full_path),
                 'raw_name': options['file_name'],
