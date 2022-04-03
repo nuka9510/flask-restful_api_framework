@@ -40,7 +40,7 @@ class Upload():
             flag = True
         
         if flag:
-            orig_name = secure_filename(file.filename).rsplit('.', 1)[0]
+            orig_name = file.filename.rsplit('.', 1)[0]
             file_ext = f".{file.filename.rsplit('.', 1)[1].lower()}"
 
             try:
