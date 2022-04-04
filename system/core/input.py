@@ -38,7 +38,7 @@ class Input():
 
         **options[default=: str|int|..., action: str]
         '''
-        result = default
+        result = None
 
         if action == 'append':
             result = request.args.getlist(name)
@@ -53,6 +53,8 @@ class Input():
             if type(result) == str:
                 result = self.__xss_filter(result)
 
+            result = result if result else default
+
         return result
 
     def post(self, name, default=None, action='store'):
@@ -61,7 +63,7 @@ class Input():
 
         **options[default=: str|int|..., action: str]
         '''
-        result = default
+        result = None
 
         if action == 'append':
             result = request.form.getlist(name)
@@ -75,5 +77,7 @@ class Input():
 
             if type(result) == str:
                 result = self.__xss_filter(result)
+
+            result = result if result else default
 
         return result
