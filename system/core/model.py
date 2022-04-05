@@ -77,6 +77,12 @@ class Model():
             row.append(self.__json_convert(val))
 
         return dict(zip(column_names, row))
+    
+    def insert_id(self):
+        '''
+        insert_id()
+        '''
+        return self.cur.lastrowid
 
     def close(self):
         '''
