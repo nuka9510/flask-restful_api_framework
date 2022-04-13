@@ -42,8 +42,11 @@
   ```
 * application/controllers/\__init__.py
   ```
-  from system import app
   from . import Example
+  ```
+* app.py
+  ```
+  from application.controllers import Example
 
   app.register_blueprint(Example.bp)
   ```

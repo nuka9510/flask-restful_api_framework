@@ -1,4 +1,4 @@
-import mysql.connector, decimal, datetime
+import mysql.connector, re, decimal, datetime
 from mysql.connector import errorcode
 from application import config
 
@@ -28,7 +28,7 @@ class Model():
         if isinstance(value, datetime.date):
             return value.strftime('%Y-%m-%d %H:%M:%S')
         elif isinstance(value, decimal.Decimal):
-            return str(value)
+            return re.sub('\.$', '', re.sub('0+$', '', str(value)))
         else:
             return value
 
