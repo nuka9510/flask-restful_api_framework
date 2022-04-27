@@ -1,4 +1,4 @@
-import ast, re
+import html
 from flask import request
 from application import config
 
@@ -10,27 +10,15 @@ class Input():
         get(name: str[, **options])
 
         post(name: str[, **options])
+
+        file(name: str[, **options])
+
+        header(name: str)
+
+        query_string()
+
+        get_json()
         '''
-
-    def __xss_filter(self, val):
-        if config['XSS_FILTER']:
-            val = re.sub('&', r'&amp;', val)
-            val = re.sub('<', r'&lt;', val)
-            val = re.sub('>', r'&gt;', val)
-            val = val.replace('\\', '/')
-
-        val = re.sub('\"', r'&quot;', val)
-        val = re.sub('\'', r'&#x27;', val)
-
-        return val
-
-    def __json_convert(self, val):
-        val = self.__xss_filter(val)
-
-        val = re.sub('(\{|\[|, |: )&#x27;', r"\1'", val)
-        val = re.sub('&#x27;(\}|\]|,|:)', r"'\1", val)
-
-        return val
 
     def get(self, name, default=None, action='store'):
         '''
@@ -44,14 +32,13 @@ class Input():
             result = request.args.getlist(name)
 
             for i in range(len(result)):
-                if re.search("^(\[|\{)", result[i]):
-                    result[i] = self.__json_convert(result[i])
-                    result[i] = ast.literal_eval(result[i])
+                if type(result[i]) == str:
+                    result[i] = html.escape(result[i]) if config['XSS_FILTER'] else result[i]
         elif action == 'store':
             result = request.args.get(name)
 
             if type(result) == str:
-                result = self.__xss_filter(result)
+                result = html.escape(result) if config['XSS_FILTER'] else result
 
             result = result if result else default
 
@@ -69,15 +56,55 @@ class Input():
             result = request.form.getlist(name)
 
             for i in range(len(result)):
-                if re.search("^(\[|\{)", result[i]):
-                    result[i] = self.__json_convert(result[i])
-                    result[i] = ast.literal_eval(result[i])
+                if type(result[i]) == str:
+                    result[i] = html.escape(result[i]) if config['XSS_FILTER'] else result[i]
         elif action == 'store':
             result = request.form.get(name)
 
             if type(result) == str:
-                result = self.__xss_filter(result)
+                result = html.escape(result) if config['XSS_FILTER'] else result
 
             result = result if result else default
 
         return result
+
+    def file(self, name=None, action='store'):
+        '''
+        file(name)
+        '''
+        result = None
+        
+        if name:
+            if action == 'append':
+                result = request.files.getlist(name)
+            else:
+                result = request.files.get(name)
+        else:
+            result = request.files.to_dict()
+        
+        return result
+
+    def header(self, name=None):
+        '''
+        header(name: str)
+        '''
+        result = None
+
+        if name:
+            result = request.headers.get(name)
+        else:
+            result = request.headers
+
+        return result
+
+    def query_string(self):
+        '''
+        query_string()
+        '''
+        return request.query_string.decode()
+
+    def get_json(self):
+        '''
+        get_json()
+        '''
+        return request.get_json()

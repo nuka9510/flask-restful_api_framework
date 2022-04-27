@@ -46,7 +46,7 @@
   ```
 * app.py
   ```
-  from application.controllers import Example
+  from application.controlers import Example
 
   app.register_blueprint(Example.bp)
   ```
@@ -106,6 +106,10 @@
 
   input.get(name[, **options])
   input.post(name[, **options])
+  input.file(name[, **options])
+  input.header(name)
+  input.query_string()
+  input.get_json()
   ```
 
 ## Upload
@@ -114,11 +118,11 @@
 
   upload = Upload()
 
-  upload.file_upload(name[, *allowed_extensions][, **options])
+  upload.file_upload(file[, *allowed_extensions][, **options])
   ```
 ### 파일 업로드
   ```
-  upload.file_upload(name[, *allowed_extensions][, **options])
+  upload.file_upload(file[, *allowed_extensions][, **options])
   ```
   * return
   ```

@@ -1,6 +1,4 @@
 import os, re
-from flask import request
-from werkzeug.utils import secure_filename
 from application import config
 
 class Upload():
@@ -8,12 +6,12 @@ class Upload():
         '''
         method
 
-        file_upload(name: str[, *allowed_extensions: str][, **options])
+        file_upload(file: fileobj[, *allowed_extensions: str][, **options])
         '''
 
-    def file_upload(self, name, *allowed_extensions, **options):
+    def file_upload(self, file, *allowed_extensions, **options):
         '''
-        file_upload(name[, *allowed_extensions: str][, **options])
+        file_upload(file[, *allowed_extensions: str][, **options])
 
         *allowed_extensions['jpg', 'gif', 'png', ...]
 
@@ -22,7 +20,6 @@ class Upload():
         name으로 온 file을 upload한다.
         '''
         flag = False
-        file = request.files[name]
 
         try:
             options['upload_path'] = os.path.join(config['UPLOAD_PATH'], options['upload_path'])
