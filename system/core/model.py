@@ -1,6 +1,7 @@
 import mysql.connector, re, decimal, datetime
 from mysql.connector import errorcode
 from application import config
+from system import logger
 
 class Model():
     def __init__(self):
@@ -22,7 +23,7 @@ class Model():
             self.con = mysql.connector.connect(**config['DATABASE'])
             self.cur = self.con.cursor()
         except mysql.connector.Error as err:
-            return err
+            logger.error(err)
 
     def __json_convert(self, value):
         if isinstance(value, datetime.date):
