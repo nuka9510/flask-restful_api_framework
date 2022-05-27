@@ -1,1 +1,1 @@
-from . import Example
+from . import Example as Example

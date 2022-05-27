@@ -1,6 +1,6 @@
 import os, re, ast, string, random, datetime
 from flask import request
-from application import config
+from application.config import config
 from system import logger
 
 class Session():

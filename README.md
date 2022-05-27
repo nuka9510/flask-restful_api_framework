@@ -5,13 +5,13 @@
   ```
   $ pip install -U Flask
   ```
-* flask-restful
-  ```
-  $ pip install flask-restful
-  ```
 * mysql-connector-python
   ```
   $ pip install mysql-connector-python
+  ```
+* pyodbc
+  ```
+  $ pip install pyodbc
   ```
 * passlib
   ```
@@ -24,25 +24,26 @@
   from system.core.controller import *
 
   bp = Blueprint('Example', __name__[, url_prefix='/example'])
-  api = Api(bp)
 
-  @api.resource('/')
-  class Example(Resource):
-      def get(self):
-          return {'message': 'Example Page GET'}
+  @bp.get('/')
+  def get():
+      return {'message': 'Example Page GET'}
 
-      def post(self):
-          return {'message': 'Example Page POST'}
+  @bp.post('/')
+  def post():
+      return {'message': 'Example Page POST'}
 
-      def put(self):
-          return {'message': 'Example Page PUT'}
+  @bp.put('/')
+  def put():
+      return {'message': 'Example Page PUT'}
 
-      def delete(self):
-          return {'message': 'Example Page DELETE'}
+  @bp.delete('/')
+  def delete():
+      return {'message': 'Example Page DELETE'}
   ```
 * application/controllers/\__init__.py
   ```
-  from . import Example
+  from . import Example as Example
   ```
 * app.py
   ```
@@ -59,10 +60,21 @@
   class Example_Model(Model):
       def example(self):
           sql = '''[QUERY]'''
+
           self.execute(sql)
           res = self.fetchall()
           self.close()
           return res
+  ```
+* application/models/\__init__.py
+  ```
+  from .Example_Model import Example_Model as Example_Model
+  ```
+* application/controllers/Example.py
+  ```
+  from models import Example_Model
+
+  example_model = Example_Model()
   ```
 ### query 실행
   ```
@@ -73,6 +85,8 @@
   self.fetchall()
   or
   self.fetchone()
+  or
+  self.insert_id()
   ```
 ### db 연결 해제
   ```

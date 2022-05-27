@@ -1,5 +1,5 @@
 import os, re
-from application import config
+from application.config import config
 
 class Upload():
     def __init__(self):

@@ -1,5 +1,5 @@
 from passlib.hash import bcrypt, sha256_crypt, sha512_crypt, md5_crypt, sha1_crypt
-from application import config
+from application.config import config
 
 class Encryption():
     def __init__(self, schema='sha256'):

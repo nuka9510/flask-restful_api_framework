@@ -1,6 +1,5 @@
-import mysql.connector, re, decimal, datetime
-from mysql.connector import errorcode
-from application import config
+import mysql.connector, pyodbc, decimal, datetime, re
+from application.config import database
 from system import logger
 
 class Model():
@@ -13,6 +12,8 @@ class Model():
         fetchall()
         
         fetchone()
+
+        insert_id()
         
         close()
         '''
@@ -20,9 +21,13 @@ class Model():
 
     def __connect(self):
         try:
-            self.con = mysql.connector.connect(**config['DATABASE'])
-            self.cur = self.con.cursor()
-        except mysql.connector.Error as err:
+            if database['dbdriver'] == 'mysql':
+                self.con = mysql.connector.connect(**database)
+                self.cur = self.con.cursor()
+            elif database['dbdriver'] == 'pyodbc':
+                self.con = pyodbc.connect(f"DRIVER={{{database['driver']}}};SERVER={database['host']}{',' + database['port'] if database['port'] else ''};DATABASE={database['database']};UID={database['user']};PWD={database['password']}", autocommit=database['autocommit'])
+                self.cur = self.con.cursor()
+        except (mysql.connector.Error, pyodbc.Error) as err:
             logger.error(err)
 
     def __json_convert(self, value):
@@ -39,13 +44,18 @@ class Model():
 
         sql문을 실행시킨다.
         '''
-        if not self.con.is_connected():
+        try:
+            if not data:
+                self.cur.execute(sql)
+            else:
+                self.cur.execute(sql, data)
+        except (mysql.connector.Error, pyodbc.Error) as err:
             self.__connect()
-        
-        if not data:
-            self.cur.execute(sql)
-        else:
-            self.cur.execute(sql, data)
+
+            if not data:
+                self.cur.execute(sql)
+            else:
+                self.cur.execute(sql, data)
 
     def fetchall(self):
         '''
@@ -53,15 +63,27 @@ class Model():
 
         select된 모든 row를 불러온다.
         '''
-        column_names = self.cur.column_names
         result = list()
 
-        for val in iter(self.cur.fetchall()):
-            row = list()
-            for i in val:
-                row.append(self.__json_convert(i))
+        if database['dbdriver'] == 'mysql':
+            column_names = self.cur.column_names
 
-            result.append(dict(zip(column_names, row)))
+            for val in iter(self.cur.fetchall()):
+                row = list()
+                for i in val:
+                    row.append(self.__json_convert(i))
+
+                result.append(dict(zip(column_names, row)))
+        elif database['dbdriver'] == 'pyodbc':
+            for i in self.cur.fetchall():
+                column_names = list()
+                row = list()
+
+                for j, k in enumerate(i.cursor_description):
+                    column_names.append(k[0])
+                    row.append(self.__json_convert(i[j]))
+
+                result.append(dict(zip(column_names, row)))
 
         return result
 
@@ -71,19 +93,37 @@ class Model():
         
         select된 row중 가장 첫 번째 row를 불러온다.
         '''
-        column_names = self.cur.column_names
+        column_names = list()
         row = list()
 
-        for val in self.cur.fetchone():
-            row.append(self.__json_convert(val))
+        if database['dbdriver'] == 'mysql':
+            column_names = self.cur.column_names
+
+            for val in self.cur.fetchone():
+                row.append(self.__json_convert(val))
+        elif database['dbdriver'] == 'pyodbc':
+            fetchone = self.cur.fetchone()
+
+            try:
+                for i, j in enumerate(fetchone.cursor_description):
+                    column_names.append(j[0])
+                    row.append(self.__json_convert(fetchone[i]))
+            except AttributeError:
+                ''''''
 
         return dict(zip(column_names, row))
-    
+
     def insert_id(self):
         '''
         insert_id()
+
+        가장 마지막으로 INSERT된 PRIMARY KEY 값을 불러온다.
         '''
-        return self.cur.lastrowid
+        if database['dbdriver'] == 'mysql':
+            return self.cur.lastrowid
+        elif database['dbdriver'] == 'pyodbc':
+            self.execute(f"SELECT @@IDENTITY AS id")
+            return self.fetchone()['id']
 
     def close(self):
         '''

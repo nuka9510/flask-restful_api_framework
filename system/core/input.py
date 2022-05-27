@@ -1,6 +1,6 @@
 import html
 from flask import request
-from application import config
+from application.config import config
 
 class Input():
     def __init__(self):
