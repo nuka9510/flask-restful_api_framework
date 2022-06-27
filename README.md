@@ -23,7 +23,7 @@
   ```
   from system.core.controller import *
 
-  bp = Blueprint('Example', __name__[, url_prefix='/example'])
+  bp = Blueprint('Example', __name__, url_prefix='/example')
 
   @bp.get('/')
   def get():
@@ -78,14 +78,16 @@
   ```
 ### query 실행
   ```
-  self.execute(sql[, *data, ...])
+  self.execute(sql: str[, *data: str | int])
   ```
 ### query 결과
   ```
   self.fetchall()
-  or
+  ```
+  ```
   self.fetchone()
-  or
+  ```
+  ```
   self.insert_id()
   ```
 ### db 연결 해제
@@ -108,7 +110,8 @@
   from application.utils import Example_Util
 
   util = Example_Util()
-
+  ```
+  ```
   util.[UTIL_METHOD]
   ```
 
@@ -117,12 +120,23 @@
   from system import Input
 
   input = Input()
-
-  input.get(name[, **options])
-  input.post(name[, **options])
-  input.file(name[, **options])
-  input.header(name)
+  ```
+  ```
+  input.get(name: str[, default: Any | None = None[, action: str = 'store']])
+  ```
+  ```
+  input.post(name: str[, default: Any | None = None[, action: str = 'store']])
+  ```
+  ```
+  input.file(name: str | None = None[, action: str='store'])
+  ```
+  ```
+  input.header(name: str | None = None)
+  ```
+  ```
   input.query_string()
+  ```
+  ```
   input.get_json()
   ```
 
@@ -131,12 +145,10 @@
   from system import Upload
 
   upload = Upload()
-
-  upload.file_upload(file[, *allowed_extensions][, **options])
   ```
 ### 파일 업로드
   ```
-  upload.file_upload(file[, *allowed_extensions][, **options])
+  upload.file_upload(file: FileStorage[, *allowed_extensions: str[, **options]])
   ```
   * return
   ```
@@ -156,9 +168,10 @@
   ```
   from system import Encryption
 
-  encryption = Encryption([schema='sha256'])
-
-  encryption.crypt(word[, **options])
+  encryption = Encryption(schema: str = 'sha256')
+  ```
+  ```
+  encryption.crypt(word: str[, **options])
   ```
 
 ## Session
@@ -166,25 +179,43 @@
   from system import Session
 
   session = Session()
-
-  session.session_id()
-
+  ```
   -headers 'Authorization'= session_id
-
+  ```
+  session.session_id()
+  ```
+  ```
   session.session_exists()
-  session.set(key, value)
-  session.get(key)
-  session.pop(key)
+  ```
+  ```
+  session.set(key: str, value: str|int|...)
+  ```
+  ```
+  session.get(key: str)
+  ```
+  ```
+  session.pop(key: str)
+  ```
+  ```
   session.clear()
   ```
 
 ## Logging
   ```
   from system import logger
-
-  logger.debug(message)
-  logger.info(message)
-  logger.warning(message)
-  logger.error(message)
-  logger.critical(message)
+  ```
+  ```
+  logger.debug(message: str)
+  ```
+  ```
+  logger.info(message: str)
+  ```
+  ```
+  logger.warning(message: str)
+  ```
+  ```
+  logger.error(message: str)
+  ```
+  ```
+  logger.critical(message: str)
   ```

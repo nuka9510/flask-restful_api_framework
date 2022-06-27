@@ -1,11 +1,14 @@
 import os, re, ast, string, random, datetime
+from typing import Union
 from flask import request
 from application.config import config
 from system import logger
 
 class Session():
-    def __init__(self):
+    def __init__(self) -> None:
         '''
+        `Session()`
+
         method
 
         session_id()
@@ -24,7 +27,12 @@ class Session():
         self.__session_id = None
         self.__session_path = None
 
-    def __set_session_id(self):
+    def __set_session_id(self) -> None:
+        '''
+        `__set_session_id()`
+
+        session_id를 생성한다.
+        '''
         self.__session_id = ''
         string_pool = string.ascii_letters + string.digits
 
@@ -36,7 +44,12 @@ class Session():
         else:
             self.__set_session_path()
 
-    def __get_session_id(self, flag = True):
+    def __get_session_id(self, flag: bool = True) -> None:
+        '''
+        `__get_session_id(flag: bool = True)`
+
+        header: Authorization에 담긴 session_id를 가져온다.
+        '''
         if not self.__session_id:
             try:
                 session_id = request.headers['Authorization']
@@ -62,7 +75,12 @@ class Session():
                 if config['SESSION_EXPIRE']:
                     self.__session_utime()
 
-    def __set_session_path(self):
+    def __set_session_path(self) -> None:
+        '''
+        `__set_session_path()`
+
+        session데이터를 담을 파일을 생성한다.
+        '''
         if not self.__session_id:
             self.__set_session_id()
         else:
@@ -75,130 +93,133 @@ class Session():
                 if not os.path.exists(self.__session_path):
                     open(self.__session_path, 'w').close()
 
-    def __session_utime(self):
+    def __session_utime(self) -> None:
+        '''
+        `__session_utime()`
+
+        session의 expire를 갱신 해준다.
+        '''
         if datetime.datetime.now() <= (datetime.datetime.fromtimestamp(os.stat(self.__session_path).st_atime) + config['SESSION_EXPIRE']):
             os.utime(self.__session_path)
         else:
             self.clear()
 
-    def __close(self):
+    def __close(self) -> None:
+        '''
+        `__close()`
+
+        session과의 연결을 끊는다.
+        '''
         self.__session_id = None
         self.__session_path = None
 
-    def set(self, key, value):
+    def set(self, key: str, value: Union[str, int]) -> None:
         '''
-        set(key: str, value: str|int|...)
+        `set(key: str, value: str | int)`
 
         session에 key, value를 담는다.
         '''
         self.__get_session_id()
 
-        if self.__session_id and self.__session_path:
-            f = open(self.__session_path, 'r')
-            r = f.readline()
+        f = open(self.__session_path, 'r')
+        r = f.readline()
 
-            if r:
-                r = ast.literal_eval(r)
-                r[key] = value
-            else:
-                r = dict(
-                    key= value
-                )
+        f.close()
 
-            f.close()
-
-            f = open(self.__session_path, 'w')
-
-            f.write(str(r))
-            f.close()
-            self.__close()
+        if r:
+            r = ast.literal_eval(r)
+            r[key] = value
         else:
-            self.set(key, value)
+            r = dict(
+                key= value
+            )
 
-    def get(self, key):
+        f = open(self.__session_path, 'w')
+
+        f.write(str(r))
+        f.close()
+        self.__close()
+
+    def get(self, key: str) -> Union[str, int, None]:
         '''
-        get(key: str)
+        `get(key: str)`
 
         session에서 해당 key의 value를 가져온다.
         '''
         self.__get_session_id()
+
         r = None
+        f = open(self.__session_path, 'r')
 
-        if self.__session_id and self.__session_path:
-            if os.path.exists(self.__session_path):
-                f = open(self.__session_path, 'r')
+        try:
+            r = f.readline()
+            
+            if r:
+                r = ast.literal_eval(r)[key]
+            else:
+                r = None
+        except KeyError:
+            pass
 
-                try:
-                    r = f.readline()
-                    
-                    if r:
-                        r = ast.literal_eval(r)[key]
-                    else:
-                        r = None
-                except KeyError:
-                    pass
-
-                f.close()
-
-            self.__close()
+        f.close()
+        self.__close()
 
         return r
 
-    def pop(self, key):
+    def pop(self, key: str) -> None:
         '''
-        pop(key: str)
+        `pop(key: str)`
 
         session에서 해당 key를 지운다.
         '''
         self.__get_session_id()
 
-        if self.__session_id and self.__session_path:
-            f = open(self.__session_path, 'r+')
-            r = ast.literal_eval(f.readline())
+        f = open(self.__session_path, 'r+')
+        r = ast.literal_eval(f.readline())
 
+        f.close()
+        r.pop(key)
+
+        if not r:
+            self.clear()
+        else:
+            f = open(self.__session_path, 'w')
+
+            f.write(str(r))
             f.close()
-            r.pop(key)
 
-            if not r:
-                self.clear()
-            else:
-                f = open(self.__session_path, 'w')
+        self.__close()
 
-                f.write(str(r))
-                f.close()
-
-            self.__close()
-
-    def clear(self):
+    def clear(self) -> None:
         '''
-        clear()
+        `clear()`
 
         session을 지운다.
         '''
         self.__get_session_id()
-
-        if self.__session_id and self.__session_path:
-            os.remove(self.__session_path)
-            self.__close()
+        os.remove(self.__session_path)
+        self.__close()
     
-    def session_id(self):
+    def session_id(self) -> str:
         '''
-        session_id()
+        `session_id()`
 
         session의 id를 가져온다.
         '''
         self.__get_session_id()
         
-        if self.__session_id and self.__session_path:
-            result = self.__session_id
+        result = self.__session_id
 
-            self.__close()
+        self.__close()
 
-            return result
-        else:
-            self.session_id()
+        return result
 
-    def session_exists(self):
+    def session_exists(self) -> bool:
+        '''
+        `session_exists()`
+
+        session이 존재하는지 확인한다.
+        '''
         self.__get_session_id(False)
         result = bool(self.__session_id)
         self.__close()

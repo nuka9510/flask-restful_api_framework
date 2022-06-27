@@ -1,30 +1,33 @@
 import html
+from typing import Union
 from flask import request
 from application.config import config
 
 class Input():
-    def __init__(self):
+    def __init__(self) -> None:
         '''
+        `Input()`
+
         method
 
-        get(name: str[, **options])
+        `get(name: str[, default: Any | None = None[, action: str = 'store']])`
 
-        post(name: str[, **options])
+        `post(name: str[, default: Any | Nonea = None[, action: str = 'store']])`
 
-        file(name: str[, **options])
+        `file(name: str | None = None[, action: str='store'])`
 
-        header(name: str)
+        `header(name: str | None = None)`
 
-        query_string()
+        `query_string()`
 
-        get_json()
+        `get_json()`
         '''
 
-    def get(self, name, default=None, action='store'):
+    def get(self, name: str, default: Union[Any, None] = None, action: str = 'store'):
         '''
-        get(name: str[, **options])
-
-        **options[default=: str|int|..., action: str]
+        `get(name: str[, default: Any | None = None[, action: str = 'store']])`
+        
+        get으로 받아온 데이터를 return 한다.
         '''
         result = None
 
@@ -44,11 +47,11 @@ class Input():
 
         return result
 
-    def post(self, name, default=None, action='store'):
+    def post(self, name: str, default: Union[Any, None] = None, action: str = 'store'):
         '''
-        post(name: str[, **options])
-
-        **options[default=: str|int|..., action: str]
+        `post(name: str[, default: Any | None = None[, action: str = 'store']])`
+        
+        post로 받아온 데이터를 return 한다.
         '''
         result = None
 
@@ -68,9 +71,11 @@ class Input():
 
         return result
 
-    def file(self, name=None, action='store'):
+    def file(self, name: Union[str, None] = None, action: str = 'store'):
         '''
-        file(name)
+        `file(name: str | None = None[, action: str = 'store'])`
+        
+        multipart/form-data로 받아온 데이터를 return 한다.
         '''
         result = None
         
@@ -84,9 +89,11 @@ class Input():
         
         return result
 
-    def header(self, name=None):
+    def header(self, name: Union[str, None] = None):
         '''
-        header(name: str)
+        `header(name: str | None = None)`
+        
+        header로 받아온 데이터를 return 한다.
         '''
         result = None
 
@@ -97,14 +104,18 @@ class Input():
 
         return result
 
-    def query_string(self):
+    def query_string(self) -> str:
         '''
-        query_string()
+        `query_string()`
+
+        query string을 return 한다.
         '''
         return request.query_string.decode()
 
     def get_json(self):
         '''
-        get_json()
+        `get_json()`
+
+        applcation/json으로 받아온 데이터를 return 한다.
         '''
         return request.get_json()
