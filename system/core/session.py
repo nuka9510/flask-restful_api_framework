@@ -11,17 +11,17 @@ class Session():
 
         method
 
-        session_id()
+        `session_id()`
 
-        session_exists()
+        `session_exists()`
 
-        set(key: str, value: str|int|...)
+        `set(key: str, value: str | int)`
 
-        get(key: str)
+        `get(key: str)`
 
-        pop(key: str)
+        `pop(key: str)`
 
-        clear()
+        `clear()`
         '''
         super().__init__()
         self.__session_id = None
