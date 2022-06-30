@@ -1,5 +1,5 @@
 import os, re, ast, string, random, datetime
-from typing import Union
+from typing import Union, Optional
 from flask import request
 from application.config import config
 from system import logger
@@ -140,7 +140,7 @@ class Session():
         f.close()
         self.__close()
 
-    def get(self, key: str) -> Union[str, int, None]:
+    def get(self, key: str) -> Optional[Union[str, int]]:
         '''
         `get(key: str)`
 
