@@ -5,7 +5,7 @@ from application.config import config
 from system import logger
 
 class Session():
-    def __init__(self) -> None:
+    def __init__(self):
         '''
         `Session()`
 
