@@ -130,9 +130,7 @@ class Session():
             r = ast.literal_eval(r)
             r[key] = value
         else:
-            r = dict(
-                key= value
-            )
+            r = dict().fromkeys(key, value)
 
         f = open(self.__session_path, 'w')
 
