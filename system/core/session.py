@@ -52,10 +52,7 @@ class Session():
         '''
         if not self.__session_id:
             try:
-                session_id = request.headers['Authorization']
-
-                if session_id:
-                    self.__session_id = re.sub('^Bearer ', '', session_id)
+                self.__session_id = request.headers['Authorization']
             except KeyError as e:
                 if 'HTTP_AUTHORIZATION' in e.args:
                     logger.error("KeyError: request.headers['Authorization']")
