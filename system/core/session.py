@@ -110,7 +110,7 @@ class Session():
         self.__session_id = None
         self.__session_path = None
 
-    def set(self, key: str, value: Union[str, int]) -> None:
+    def set(self, key: str, value: Union[str, int, float]) -> None:
         '''
         `set(key: str, value: str | int)`
 
@@ -135,7 +135,7 @@ class Session():
         f.close()
         self.__close()
 
-    def get(self, key: str) -> Optional[Union[str, int]]:
+    def get(self, key: str) -> Optional[Union[str, int, float]]:
         '''
         `get(key: str)`
 
