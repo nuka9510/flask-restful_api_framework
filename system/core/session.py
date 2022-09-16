@@ -1,4 +1,4 @@
-import os, re, ast, string, random, datetime
+import os, ast, string, random, datetime
 from typing import Union, Optional
 from flask import request
 from application.config import config
@@ -9,28 +9,21 @@ class Session():
         '''
         `Session()`
 
-        method
-
-        `session_id()`
-
-        `session_exists()`
-
-        `set(key: str, value: str | int)`
-
-        `get(key: str)`
-
-        `pop(key: str)`
-
-        `clear()`
+        ```
+        @method session_id()
+        @method session_exists()
+        @method set(key: str, value: str | int)
+        @method get(key: str)
+        @method pop(key: str)
+        @method clear()
+        ```
         '''
         super().__init__()
         self.__session_id = None
         self.__session_path = None
 
-    def __set_session_id(self) -> None:
+    def __set_session_id(self):
         '''
-        `__set_session_id()`
-
         session_id를 생성한다.
         '''
         self.__session_id = ''
@@ -44,11 +37,12 @@ class Session():
         else:
             self.__set_session_path()
 
-    def __get_session_id(self, flag: bool = True) -> None:
+    def __get_session_id(self, flag: bool = True):
         '''
-        `__get_session_id(flag: bool = True)`
-
         header: Authorization에 담긴 session_id를 가져온다.
+        ```
+        @param {bool} flag - __set_session_path() 실행 여부
+        ```
         '''
         if not self.__session_id:
             try:
@@ -72,10 +66,8 @@ class Session():
                 if config['SESSION_EXPIRE']:
                     self.__session_utime()
 
-    def __set_session_path(self) -> None:
+    def __set_session_path(self):
         '''
-        `__set_session_path()`
-
         session데이터를 담을 파일을 생성한다.
         '''
         if not self.__session_id:
@@ -90,10 +82,8 @@ class Session():
                 if not os.path.exists(self.__session_path):
                     open(self.__session_path, 'w').close()
 
-    def __session_utime(self) -> None:
+    def __session_utime(self):
         '''
-        `__session_utime()`
-
         session의 expire를 갱신 해준다.
         '''
         if datetime.datetime.now() <= (datetime.datetime.fromtimestamp(os.stat(self.__session_path).st_atime) + config['SESSION_EXPIRE']):
@@ -101,20 +91,20 @@ class Session():
         else:
             self.clear()
 
-    def __close(self) -> None:
+    def __close(self):
         '''
-        `__close()`
-
         session과의 연결을 끊는다.
         '''
         self.__session_id = None
         self.__session_path = None
 
-    def set(self, key: str, value: Union[str, int, float]) -> None:
+    def set(self, key: str, value: Union[str, int, float]):
         '''
-        `set(key: str, value: str | int)`
-
         session에 key, value를 담는다.
+        ```
+        @param {str} key - session에 담을 데이터의 key
+        @param {str | int | float} value - session에 담을 데이터의 value
+        ```
         '''
         self.__get_session_id()
 
@@ -137,9 +127,11 @@ class Session():
 
     def get(self, key: str) -> Optional[Union[str, int, float]]:
         '''
-        `get(key: str)`
-
         session에서 해당 key의 value를 가져온다.
+        ```
+        @param {str} key - session에서 가져올 데이터의 key
+        @returns
+        ```
         '''
         self.__get_session_id()
 
@@ -161,11 +153,12 @@ class Session():
 
         return r
 
-    def pop(self, key: str) -> None:
+    def pop(self, key: str):
         '''
-        `pop(key: str)`
-
         session에서 해당 key를 지운다.
+        ```
+        @param {str} key - session에서 지울 데이터의 key
+        ```
         '''
         self.__get_session_id()
 
@@ -185,10 +178,8 @@ class Session():
 
         self.__close()
 
-    def clear(self) -> None:
+    def clear(self):
         '''
-        `clear()`
-
         session을 지운다.
         '''
         self.__get_session_id()
@@ -197,9 +188,10 @@ class Session():
     
     def session_id(self) -> str:
         '''
-        `session_id()`
-
         session의 id를 가져온다.
+        ```
+        @returns
+        ```
         '''
         self.__get_session_id()
         
@@ -211,9 +203,10 @@ class Session():
 
     def session_exists(self) -> bool:
         '''
-        `session_exists()`
-
         session이 존재하는지 확인한다.
+        ```
+        @returns
+        ```
         '''
         self.__get_session_id(False)
         result = bool(self.__session_id)
