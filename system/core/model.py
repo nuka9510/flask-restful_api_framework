@@ -17,7 +17,7 @@ class Model():
         ```
         '''
 
-    def __connect(self) -> None:
+    def __connect(self):
         '''
         database와 연결한다.
         '''
@@ -158,7 +158,7 @@ class Model():
             self.execute(f"SELECT @@IDENTITY AS id")
             return self.fetchone()['id']
 
-    def close(self) -> None:
+    def close(self):
         '''
         database 연결을 끊는다.
         '''
