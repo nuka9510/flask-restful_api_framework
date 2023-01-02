@@ -131,7 +131,7 @@ class Session():
             else:
                 r = None
         except KeyError:
-            pass
+            r = None
 
         f.close()
         self.__close()
