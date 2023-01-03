@@ -83,7 +83,7 @@ class Session():
         self.__session_id = None
         self.__session_path = None
 
-    def set(self, key: str, value: Union[str, int, float]):
+    def set(self, key: str, value: Union[bool, str, int, float]):
         '''session에 key, value를 담는다.
         ```
         Args:
@@ -109,7 +109,7 @@ class Session():
         f.close()
         self.__close()
 
-    def get(self, key: str) -> Optional[Union[str, int, float]]:
+    def get(self, key: str) -> Optional[Union[bool, str, int, float]]:
         '''session에서 해당 key의 value를 가져온다.
         ```
         Args:
