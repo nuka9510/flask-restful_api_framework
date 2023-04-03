@@ -1,4 +1,4 @@
-import os, ast, string, random, datetime, sys
+import os, ast, string, random, datetime
 from typing import Union, Optional
 from flask import request
 from application.config import config
@@ -40,7 +40,7 @@ class Session():
                 self.__session_id = request.headers['Authorization']
             except KeyError as e:
                 if 'HTTP_AUTHORIZATION' in e.args:
-                    logger.error("KeyError: request.headers['Authorization']", exc_info = sys.exc_info())
+                    logger.error("KeyError: request.headers['Authorization']", exc_info = True)
 
         if flag:
             self.__set_session_path()
