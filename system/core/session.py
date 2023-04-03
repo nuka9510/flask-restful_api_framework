@@ -40,7 +40,7 @@ class Session():
                 self.__session_id = request.headers['Authorization']
             except KeyError as e:
                 if 'HTTP_AUTHORIZATION' in e.args:
-                    logger.error("KeyError: request.headers['Authorization']", exc_info = True)
+                    logger.error("KeyError: request.headers['Authorization']")
 
         if flag:
             self.__set_session_path()
