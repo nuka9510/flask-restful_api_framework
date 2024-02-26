@@ -1,5 +1,6 @@
 import os, logging
 from datetime import datetime, timedelta
+from sqlalchemy import URL
 
 app = {
     'ENV': 'development', # 'production'
@@ -30,7 +31,17 @@ app = {
     'JSONIFY_MIMETYPE': 'application/json',
     'TEMPLATES_AUTO_RELOAD': None,
     'EXPLAIN_TEMPLATE_LOADING': False,
-    'MAX_COOKIE_SIZE': 4093
+    'MAX_COOKIE_SIZE': 4093,
+    'SQLALCHEMY_DATABASE_URI': URL.create(
+        database=None,
+        drivername='',
+        host=None,
+        port=None,
+        username=None,
+        password=None,
+        query=dict()
+    ),
+    'SQLALCHEMY_ENGINE_OPTIONS': dict()
 }
 
 config = {
